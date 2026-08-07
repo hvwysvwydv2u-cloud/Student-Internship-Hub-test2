@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Filter, CheckCircle } from 'lucide-react';
@@ -9,6 +9,21 @@ import { governorates } from '../data/mockData';
 
 export const NavBar = () => {
   const pathname = usePathname();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('studentUser');
+    if (stored) {
+      setUser(JSON.parse(stored));
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('studentUser');
+    setUser(null);
+    window.location.reload();
+  };
+
   const navLinks = [
     { name: 'الرئيسية', path: '/' },
     { name: 'البحث', path: '/search' },
@@ -43,12 +58,21 @@ export const NavBar = () => {
           ))}
         </div>
 
-        <Link href="/login">
-          <Button size="sm" className="gap-2">
-            <LogIn className="w-4 h-4" />
-            <span>دخول</span>
-          </Button>
-        </Link>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-green-500">أهلاً، {user.name}</span>
+            <Button size="sm" variant="outline" className="text-red-400 hover:text-red-500 border-red-500/20 hover:bg-red-500/10" onClick={handleLogout}>
+              تسجيل الخروج
+            </Button>
+          </div>
+        ) : (
+          <Link href="/login">
+            <Button size="sm" className="gap-2">
+              <LogIn className="w-4 h-4" />
+              <span>دخول</span>
+            </Button>
+          </Link>
+        )}
       </div>
     </nav>
   );
@@ -221,32 +245,163 @@ export const MatchForm = ({ onSubmit }) => (
 
 export const LoginForm = () => {
   const [activeTab, setActiveTab] = useState('register');
-  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // Register Form State
+  const [registerForm, setRegisterForm] = useState({
+    name: '',
+    governorate: '',
+    academicYear: '',
+    department: '',
+    phone: '',
+  });
+
+  // Login Form State
+  const [loginPhone, setLoginPhone] = useState('');
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registerForm),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'حدث خطأ ما');
+      }
+
+      setSuccess('تم إنشاء الحساب بنجاح! جاري تسجيل الدخول...');
+      localStorage.setItem('studentUser', JSON.stringify(data.user));
+      
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: loginPhone }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'حدث خطأ ما');
+      }
+
+      setSuccess('تم تسجيل الدخول بنجاح!');
+      localStorage.setItem('studentUser', JSON.stringify(data.user));
+
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 1500);
+
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-md mx-auto" dir="rtl">
       <Tabs 
         tabs={[{id: 'register', label: 'تسجيل حساب جديد'}, {id: 'login', label: 'تسجيل الدخول'}]} 
         activeTab={activeTab} 
-        onChange={setActiveTab}
+        onChange={(tab) => {
+          setActiveTab(tab);
+          setError('');
+          setSuccess('');
+        }}
       />
       
       <Card className="mt-6 border-white/10">
         <CardContent className="p-8">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-500 text-sm p-3 rounded-lg mb-4 text-center">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-green-500/10 border border-green-500/20 text-green-500 text-sm p-3 rounded-lg mb-4 text-center">
+              {success}
+            </div>
+          )}
+
           {activeTab === 'register' ? (
-            <div className="space-y-4">
-              <Input placeholder="الاسم الكامل" />
-              <Select options={governorates} placeholder="المحافظة" />
-              <Select options={["الأولى", "الثانية", "الثالثة", "الرابعة"]} placeholder="السنة الدراسية" />
-              <Input placeholder="القسم الدراسي" />
-              <Input type="tel" placeholder="رقم الهاتف (01X...)" />
-              <Button className="w-full mt-4">إنشاء حساب</Button>
-            </div>
+            <form onSubmit={handleRegisterSubmit} className="space-y-4">
+              <Input 
+                placeholder="الاسم الكامل" 
+                required
+                value={registerForm.name}
+                onChange={(e) => setRegisterForm({...registerForm, name: e.target.value})}
+              />
+              <Select 
+                options={governorates} 
+                placeholder="اختر المحافظة" 
+                required
+                value={registerForm.governorate}
+                onChange={(e) => setRegisterForm({...registerForm, governorate: e.target.value})}
+              />
+              <Select 
+                options={["الأولى", "الثانية", "الثالثة", "الرابعة"]} 
+                placeholder="السنة الدراسية" 
+                required
+                value={registerForm.academicYear}
+                onChange={(e) => setRegisterForm({...registerForm, academicYear: e.target.value})}
+              />
+              <Input 
+                placeholder="القسم الدراسي (مثال: هندسة ميكانيكية)" 
+                required
+                value={registerForm.department}
+                onChange={(e) => setRegisterForm({...registerForm, department: e.target.value})}
+              />
+              <Input 
+                type="tel" 
+                placeholder="رقم الهاتف (01XXXXXXXXX)" 
+                required
+                value={registerForm.phone}
+                onChange={(e) => setRegisterForm({...registerForm, phone: e.target.value})}
+              />
+              <Button type="submit" disabled={loading} className="w-full mt-4">
+                {loading ? 'جاري التحميل...' : 'إنشاء حساب'}
+              </Button>
+            </form>
           ) : (
-            <div className="space-y-4">
-              <Input type="email" placeholder="البريد الإلكتروني" />
-              <Input type="password" placeholder="كلمة المرور" />
-              <Button className="w-full mt-4">تسجيل الدخول</Button>
-            </div>
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              <Input 
+                type="tel" 
+                placeholder="رقم الهاتف المسجل (01XXXXXXXXX)" 
+                required
+                value={loginPhone}
+                onChange={(e) => setLoginPhone(e.target.value)}
+              />
+              <Button type="submit" disabled={loading} className="w-full mt-4">
+                {loading ? 'جاري التحميل...' : 'تسجيل الدخول'}
+              </Button>
+            </form>
           )}
         </CardContent>
       </Card>

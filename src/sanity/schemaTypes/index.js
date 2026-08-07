@@ -1,7 +1,8 @@
 import factory from './factory'
 import housing from './housing'
 import internship from './internship'
+import student from './student'
 
 export const schema = {
-  types: [factory, housing, internship],
+  types: [factory, housing, internship, student],
 }
