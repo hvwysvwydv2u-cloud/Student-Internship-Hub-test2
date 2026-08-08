@@ -1,0 +1,296 @@
+[
+  {
+    "fields": [
+      {
+        "name": "name",
+        "type": "string",
+        "title": "Factory Name"
+      },
+      {
+        "options": {
+          "source": "name"
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "logo",
+        "type": "image"
+      },
+      {
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "name": "hours",
+        "type": "number",
+        "title": "Training Hours"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "departments",
+        "type": "array"
+      },
+      {
+        "name": "contact",
+        "type": "string",
+        "title": "Contact Phone"
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "title": "Stipend / Price"
+      }
+    ],
+    "name": "factory",
+    "type": "document",
+    "title": "Factories"
+  },
+  {
+    "fields": [
+      {
+        "name": "name",
+        "type": "string",
+        "title": "Housing Name"
+      },
+      {
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "title": "Price per Month"
+      },
+      {
+        "name": "contact",
+        "type": "string",
+        "title": "Contact Phone"
+      },
+      {
+        "initialValue": false,
+        "name": "isComingSoon",
+        "type": "boolean",
+        "title": "Coming Soon?"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image"
+      }
+    ],
+    "name": "housing",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "name": "title",
+        "type": "string",
+        "title": "Opportunity Title"
+      },
+      {
+        "options": {
+          "source": "title"
+        },
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "custom"
+              }
+            ]
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "to": [
+          {
+            "type": "factory"
+          }
+        ],
+        "name": "factory",
+        "type": "reference"
+      },
+      {
+        "name": "location",
+        "type": "string"
+      },
+      {
+        "name": "description",
+        "type": "text"
+      },
+      {
+        "name": "hours",
+        "type": "number",
+        "title": "Training Hours"
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "title": "Stipend / Price"
+      },
+      {
+        "of": [
+          {
+            "type": "string"
+          }
+        ],
+        "name": "departments",
+        "type": "array"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image"
+      }
+    ],
+    "name": "internship",
+    "type": "document",
+    "title": "Internship Opportunities"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "الاسم الكامل"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "phone",
+        "type": "string",
+        "title": "رقم الهاتف"
+      },
+      {
+        "validation": [
+          {
+            "level": "error",
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ]
+          }
+        ],
+        "name": "governorate",
+        "type": "string",
+        "title": "المحافظة"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "الأولى",
+              "value": "الأولى"
+            },
+            {
+              "title": "الثانية",
+              "value": "الثانية"
+            },
+            {
+              "title": "الثالثة",
+              "value": "الثالثة"
+            },
+            {
+              "title": "الرابعة",
+              "value": "الرابعة"
+            }
+          ]
+        },
+        "name": "academicYear",
+        "type": "string",
+        "title": "السنة الدراسية"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "تكنولوجيا المعلومات",
+              "value": "تكنولوجيا المعلومات"
+            },
+            {
+              "title": "تكنولوجيا الشبكات",
+              "value": "تكنولوجيا الشبكات"
+            },
+            {
+              "title": "تكنولوجيا الأجهزة",
+              "value": "تكنولوجيا الأجهزة"
+            },
+            {
+              "title": "تصنيع غذائي",
+              "value": "تصنيع غذائي"
+            }
+          ]
+        },
+        "name": "department",
+        "type": "string",
+        "title": "القسم الدراسي"
+      },
+      {
+        "initialValue": 0,
+        "name": "completedHours",
+        "type": "number",
+        "title": "الساعات التدريبية المنجزة"
+      },
+      {
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "تاريخ التسجيل"
+      }
+    ],
+    "name": "student",
+    "type": "document",
+    "title": "Students"
+  }
+]
