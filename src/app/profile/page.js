@@ -9,15 +9,59 @@ import { client } from '@/sanity/lib/client';
 import { User, Phone, MapPin, GraduationCap, BookOpen, Save, Edit3, LogOut, CheckCircle, Award, Compass, Plus, Minus } from 'lucide-react';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    governorate: '',
-    academicYear: '',
-    department: '',
+  // Initialize state from localStorage to avoid setState in effect
+  const [user, setUser] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('studentUser');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          localStorage.removeItem('studentUser');
+        }
+      }
+    }
+    return null;
   });
-  const [completedHours, setCompletedHours] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('studentUser');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          return {
+            name: parsed.name || '',
+            governorate: parsed.governorate || '',
+            academicYear: parsed.academicYear || '',
+            department: parsed.department || '',
+          };
+        } catch {
+          // ignore
+        }
+      }
+    }
+    return {
+      name: '',
+      governorate: '',
+      academicYear: '',
+      department: '',
+    };
+  });
+  const [completedHours, setCompletedHours] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('studentUser');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          return Number(parsed.completedHours) || 0;
+        } catch {
+          // ignore
+        }
+      }
+    }
+    return 0;
+  });
   const [recommendedJobs, setRecommendedJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [savingHours, setSavingHours] = useState(false);
@@ -25,24 +69,6 @@ export default function ProfilePage() {
   const [success, setSuccess] = useState('');
 
   const targetHours = 120; // 120 hours target as requested
-
-  useEffect(() => {
-    const stored = localStorage.getItem('studentUser');
-    if (stored) {
-      const parsedUser = JSON.parse(stored);
-      setUser(parsedUser);
-      setCompletedHours(Number(parsedUser.completedHours) || 0);
-      setFormData({
-        name: parsedUser.name || '',
-        governorate: parsedUser.governorate || '',
-        academicYear: parsedUser.academicYear || '',
-        department: parsedUser.department || '',
-      });
-      fetchRecommendations(parsedUser.department);
-    } else {
-      window.location.href = '/login';
-    }
-  }, []);
 
   const fetchRecommendations = async (dept) => {
     if (!dept) return;
@@ -68,6 +94,25 @@ export default function ProfilePage() {
       console.error("Error fetching recommended internships:", err);
     }
   };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => {
+    const stored = localStorage.getItem('studentUser');
+    if (stored) {
+      const parsedUser = JSON.parse(stored);
+      setUser(parsedUser);
+      setCompletedHours(Number(parsedUser.completedHours) || 0);
+      setFormData({
+        name: parsedUser.name || '',
+        governorate: parsedUser.governorate || '',
+        academicYear: parsedUser.academicYear || '',
+        department: parsedUser.department || '',
+      });
+      fetchRecommendations(parsedUser.department);
+    } else {
+      window.location.href = '/login';
+    }
+  }, [fetchRecommendations]);
 
   const handleLogout = () => {
     localStorage.removeItem('studentUser');

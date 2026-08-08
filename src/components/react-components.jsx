@@ -9,14 +9,19 @@ import { governorates } from '../data/mockData';
 
 export const NavBar = () => {
   const pathname = usePathname();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const stored = localStorage.getItem('studentUser');
-    if (stored) {
-      setUser(JSON.parse(stored));
+  const [user, setUser] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('studentUser');
+      if (stored) {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          localStorage.removeItem('studentUser');
+        }
+      }
     }
-  }, []);
+    return null;
+  });
 
   const handleLogout = () => {
     localStorage.removeItem('studentUser');
