@@ -13,7 +13,7 @@ export default function Home() {
   ];
 
   const stats = [
-    { label: "طلاب مسجلون", value: "15,000+" },
+    { label: "طلاب مسجلون", value: "12000" },
     { label: "فرص متاحة", value: "1,200+" },
     { label: "مصانع شريكة", value: "450+" },
   ];
