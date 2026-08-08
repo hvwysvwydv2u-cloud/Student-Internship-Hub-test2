@@ -46,6 +46,7 @@ export async function POST(request) {
       governorate,
       academicYear,
       department,
+      completedHours: 0,
       createdAt: new Date().toISOString(),
     };
 
@@ -60,6 +61,7 @@ export async function POST(request) {
         governorate: result.governorate,
         academicYear: result.academicYear,
         department: result.department,
+        completedHours: result.completedHours || 0,
       }
     });
 

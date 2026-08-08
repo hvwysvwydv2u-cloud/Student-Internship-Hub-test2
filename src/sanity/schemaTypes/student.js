@@ -40,6 +40,12 @@ export default {
       type: 'string',
     },
     {
+      name: 'completedHours',
+      title: 'الساعات التدريبية المنجزة',
+      type: 'number',
+      initialValue: 0,
+    },
+    {
       name: 'createdAt',
       title: 'تاريخ التسجيل',
       type: 'datetime',

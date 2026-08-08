@@ -59,10 +59,13 @@ export const NavBar = () => {
         </div>
 
         {user ? (
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-green-500">أهلاً، {user.name}</span>
-            <Button size="sm" variant="outline" className="text-red-400 hover:text-red-500 border-red-500/20 hover:bg-red-500/10" onClick={handleLogout}>
-              تسجيل الخروج
+          <div className="flex items-center gap-3">
+            <Link href="/profile" className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-green-500/20 bg-green-500/5 hover:bg-green-500/10 transition-colors">
+              <User className="w-4 h-4 text-green-500" />
+              <span className="text-sm font-medium text-white">{user.name}</span>
+            </Link>
+            <Button size="sm" variant="outline" className="text-red-400 hover:text-red-500 border-red-500/20 hover:bg-red-500/10 px-3" onClick={handleLogout}>
+              خروج
             </Button>
           </div>
         ) : (

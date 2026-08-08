@@ -27,7 +27,8 @@ export async function POST(request) {
       phone,
       governorate,
       academicYear,
-      department
+      department,
+      completedHours
     }`;
     
     const student = await writeClient.fetch(query, { phone });
@@ -48,6 +49,7 @@ export async function POST(request) {
         governorate: student.governorate,
         academicYear: student.academicYear,
         department: student.department,
+        completedHours: student.completedHours || 0,
       }
     });
 
