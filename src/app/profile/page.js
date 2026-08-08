@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
 import React, { useState, useEffect } from 'react';
 import { StitchSection, StitchLoop } from '@/components/stitch-loop';
 import { Button, Card, CardContent, Input, Select, Badge } from '@/components/ui';
@@ -23,6 +25,14 @@ export default function ProfilePage() {
     }
     return null;
   });
+  
+  // Redirect to login if no user (client-side only)
+  useEffect(() => {
+    if (!user && typeof window !== 'undefined') {
+      window.location.href = '/login';
+    }
+  }, [user]);
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -95,24 +105,12 @@ export default function ProfilePage() {
     }
   };
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+  // Fetch recommendations when user or department changes
   useEffect(() => {
-    const stored = localStorage.getItem('studentUser');
-    if (stored) {
-      const parsedUser = JSON.parse(stored);
-      setUser(parsedUser);
-      setCompletedHours(Number(parsedUser.completedHours) || 0);
-      setFormData({
-        name: parsedUser.name || '',
-        governorate: parsedUser.governorate || '',
-        academicYear: parsedUser.academicYear || '',
-        department: parsedUser.department || '',
-      });
-      fetchRecommendations(parsedUser.department);
-    } else {
-      window.location.href = '/login';
+    if (user?.department) {
+      fetchRecommendations(user.department);
     }
-  }, [fetchRecommendations]);
+  }, [user?.department, fetchRecommendations]);
 
   const handleLogout = () => {
     localStorage.removeItem('studentUser');

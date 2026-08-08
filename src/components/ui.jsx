@@ -18,10 +18,10 @@ export const Button = React.forwardRef(({
   ...props
 }, ref) => {
   const variants = {
-    primary: 'btn-primary',
-    secondary: 'btn-secondary',
-    ghost: 'btn-ghost',
-    outline: 'btn-outline',
+    primary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-primary text-background transition-all duration-200 hover:bg-primary-hover hover:shadow-[0_0_24px_rgba(0,230,118,0.15)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:transform-none disabled:hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+    secondary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-surface-elevated text-white border border-border hover:bg-surface hover:border-border-hover hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+    ghost: 'inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+    outline: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl border border-border text-white hover:border-primary/50 hover:bg-primary-subtle hover:text-primary transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
   };
   const sizes = {
     sm: 'px-3 py-1.5 text-xs',
@@ -55,7 +55,7 @@ Button.displayName = 'Button';
 export const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('card-base', className)}
+    className={cn('bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-border-hover hover:shadow-lg', className)}
     {...props}
   />
 ));
@@ -83,7 +83,7 @@ export const Input = React.forwardRef(({ className, type = 'text', ...props }, r
   <input
     ref={ref}
     type={type}
-    className={cn('input-base', className)}
+    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-surface border border-border rounded-xl text-white placeholder:text-gray-500 transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background', className)}
     {...props}
   />
 ));
@@ -92,7 +92,7 @@ Input.displayName = 'Input';
 export const Textarea = React.forwardRef(({ className, ...props }, ref) => (
   <textarea
     ref={ref}
-    className={cn('input-base min-h-[100px] resize-y', className)}
+    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-surface border border-border rounded-xl text-white placeholder:text-gray-500 transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[100px] resize-y', className)}
     {...props}
   />
 ));
@@ -101,7 +101,7 @@ Textarea.displayName = 'Textarea';
 export const Select = React.forwardRef(({ className, options = [], placeholder, ...props }, ref) => (
   <select
     ref={ref}
-    className={cn('select-base', className)}
+    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-surface border border-border rounded-xl text-white appearance-none cursor-pointer transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background', className)}
     {...props}
   >
     {placeholder && <option value="" disabled selected>{placeholder}</option>}
@@ -116,9 +116,9 @@ Select.displayName = 'Select';
 
 export const Badge = ({ className, variant = 'primary', ...props }) => {
   const variants = {
-    primary: 'badge-primary',
-    secondary: 'badge-secondary',
-    outline: 'badge-outline',
+    primary: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-subtle text-primary border border-primary/20',
+    secondary: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10',
+    outline: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border border-primary text-primary',
   };
   return (
     <span
@@ -138,7 +138,7 @@ export const Progress = ({ value = 0, className, size = 'md', showLabel = false 
   return (
     <div className={cn('w-full bg-surface-elevated rounded-full overflow-hidden', sizes[size], className)}>
       <div
-        className="progress-bar-fill"
+        className="h-full bg-primary rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(0,230,118,0.5)]"
         style={{ width: `${clampedValue}%` }}
         role="progressbar"
         aria-valuenow={clampedValue}
@@ -166,7 +166,7 @@ export const Avatar = ({ src, fallback, className, size = 'md' }) => {
     '3xl': 'h-24 w-24 text-3xl',
   };
   return (
-    <div className={cn('avatar-base flex-shrink-0 overflow-hidden', sizes[size], className)}>
+    <div className={cn('inline-flex items-center justify-center rounded-xl bg-primary-subtle border border-primary/20 text-primary font-semibold overflow-hidden', sizes[size], className)}>
       {src ? <img src={src} alt="" className="h-full w-full object-cover" /> : <span>{fallback}</span>}
     </div>
   );
@@ -201,7 +201,7 @@ export const Label = ({ className, required, children, ...props }) => (
 export const CardHover = React.forwardRef(({ className, children, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('card-hover-lift', className)}
+    className={cn('bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-border-hover hover:shadow-lg hover:-translate-y-1', className)}
     {...props}
   >
     {children}

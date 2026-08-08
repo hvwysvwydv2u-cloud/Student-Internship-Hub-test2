@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Filter, CheckCircle } from 'lucide-react';
-import { Button, Card, CardContent, Input, Select, Badge, Progress, Avatar, Separator, Tabs, cn } from './ui';
+import { Button, Card, CardContent, Input, Select, Badge, Progress, Avatar, Separator, Tabs, cn, Label } from './ui';
 import { governorates, departments } from '../data/mockData';
 
 export const NavBar = () => {
@@ -221,7 +221,7 @@ export const SearchBar = () => (
 
 export const FilterPanel = () => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10" dir="rtl">
-    <Select options={governmentates} placeholder="المحافظة" />
+    <Select options={governorates} placeholder="المحافظة" />
     <Select options={departments} placeholder="القسم" />
     <Select options={["40 ساعة", "80 ساعة", "120 ساعة", "160 ساعة", "200+ ساعة"]} placeholder="عدد الساعات" />
   </div>
