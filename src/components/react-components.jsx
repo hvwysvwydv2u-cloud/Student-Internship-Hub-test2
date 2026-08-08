@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Filter, CheckCircle } from 'lucide-react';
 import { Button, Card, CardContent, Input, Select, Badge, Progress, Avatar, Separator, Tabs, cn } from './ui';
-import { governorates } from '../data/mockData';
+import { governorates, departments } from '../data/mockData';
 
 export const NavBar = () => {
   const pathname = usePathname();
@@ -221,8 +221,8 @@ export const SearchBar = () => (
 
 export const FilterPanel = () => (
   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10" dir="rtl">
-    <Select options={governorates} placeholder="المحافظة" />
-    <Select options={["هندسة ميكانيكية", "هندسة كهربائية", "هندسة كيميائية", "هندسة مدنية"]} placeholder="القسم" />
+    <Select options={governmentates} placeholder="المحافظة" />
+    <Select options={departments} placeholder="القسم" />
     <Select options={["40 ساعة", "80 ساعة", "120 ساعة", "160 ساعة", "200+ ساعة"]} placeholder="عدد الساعات" />
   </div>
 );
@@ -231,22 +231,22 @@ export const MatchForm = ({ onSubmit }) => (
   <Card className="max-w-xl mx-auto" dir="rtl">
     <CardContent className="p-8 space-y-6">
       <div className="space-y-4">
-        <label className="text-sm text-white/60">القسم الدراسي</label>
-        <Select options={["هندسة ميكانيكية", "هندسة كهربائية", "هندسة كيميائية", "هندسة مواد"]} placeholder="اختر قسمك" />
+        <Label>القسم الدراسي</Label>
+        <Select options={departments} placeholder="اختر قسمك" />
       </div>
       <div className="space-y-4">
-        <label className="text-sm text-white/60">السنة الدراسية</label>
-        <Select options={["الأولى", "الثانية", "الثالثة", "الرابعة"]} placeholder="اختر سنتك" />
+        <Label>الفرقة</Label>
+        <Select options={["الأولى", "الثانية", "الثالثة", "الرابعة"]} placeholder="اختر فرقتك" />
       </div>
       <div className="space-y-4">
-        <label className="text-sm text-white/60">المحافظة المفضلة</label>
+        <Label>المحافظة المفضلة</Label>
         <Select options={governorates} placeholder="اختر المحافظة" />
       </div>
       <div className="space-y-4">
-        <label className="text-sm text-white/60">عدد الساعات المطلوب</label>
+        <Label>عدد الساعات المطلوب</Label>
         <Input type="number" placeholder="مثال: 120" />
       </div>
-      <Button className="w-full py-4 text-lg" onClick={onSubmit}>ابحث عن تطابق</Button>
+      <Button className="w-full py-4 text-lg" onClick={onSubmit}>ابحث عن فرصك</Button>
     </CardContent>
   </Card>
 );
@@ -375,13 +375,14 @@ export const LoginForm = () => {
               />
               <Select 
                 options={["الأولى", "الثانية", "الثالثة", "الرابعة"]} 
-                placeholder="السنة الدراسية" 
+                placeholder="اختر فرقتك" 
                 required
                 value={registerForm.academicYear}
                 onChange={(e) => setRegisterForm({...registerForm, academicYear: e.target.value})}
               />
-              <Input 
-                placeholder="القسم الدراسي (مثال: هندسة ميكانيكية)" 
+              <Select 
+                options={departments} 
+                placeholder="اختر قسمك" 
                 required
                 value={registerForm.department}
                 onChange={(e) => setRegisterForm({...registerForm, department: e.target.value})}

@@ -38,6 +38,14 @@ export default {
       name: 'department',
       title: 'القسم الدراسي',
       type: 'string',
+      options: {
+        list: [
+          { title: 'تكنولوجيا المعلومات', value: 'تكنولوجيا المعلومات' },
+          { title: 'تكنولوجيا الشبكات', value: 'تكنولوجيا الشبكات' },
+          { title: 'تكنولوجيا الأجهزة', value: 'تكنولوجيا الأجهزة' },
+          { title: 'تصنيع غذائي', value: 'تصنيع غذائي' },
+        ],
+      },
     },
     {
       name: 'completedHours',

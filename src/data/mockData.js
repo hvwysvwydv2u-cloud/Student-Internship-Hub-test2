@@ -4,66 +4,66 @@ export const factories = [
     name: "مصنع النيل للصناعات",
     hours: 120,
     location: "القاهرة",
-    department: "هندسة ميكانيكية",
+    department: "تكنولوجيا الأجهزة",
     matchScore: 95,
     description: "رائد في مجال التصنيع الميكانيكي وتطوير الآلات الثقيلة.",
     contact: "02-23456789",
-    departments: ["ميكانيكا", "إنتاج", "تصميم"]
+    departments: ["تكنولوجيا الأجهزة", "تكنولوجيا المعلومات"]
   },
   {
     id: 2,
     name: "مصنع الدلتا للكيماويات",
     hours: 160,
     location: "الإسكندرية",
-    department: "هندسة كيميائية",
+    department: "تصنيع غذائي",
     matchScore: 87,
     description: "متخصص في إنتاج المواد الكيميائية والأسمدة الصناعية.",
     contact: "03-45678912",
-    departments: ["كيمياء", "تحليل مخبري", "جودة"]
+    departments: ["تصنيع غذائي", "تكنولوجيا المعلومات"]
   },
   {
     id: 3,
     name: "مصنع القاهرة للهندسة",
     hours: 200,
     location: "الجيزة",
-    department: "هندسة كهربائية",
+    department: "تكنولوجيا الشبكات",
     matchScore: 73,
     description: "تصميم وتصنيع اللوحات الكهربائية والأنظمة الذكية.",
     contact: "02-98765432",
-    departments: ["كهرباء", "تحكم", "إلكترونيات"]
+    departments: ["تكنولوجيا الشبكات", "تكنولوجيا الأجهزة"]
   },
   {
     id: 4,
     name: "مصنع الإسكندرية للبلاستيك",
     hours: 240,
     location: "الإسكندرية",
-    department: "هندسة مواد",
+    department: "تكنولوجيا المعلومات",
     matchScore: 65,
     description: "أحدث تقنيات حقن وتشكيل البلاستيك للمنتجات الطبية.",
     contact: "03-76543210",
-    departments: ["مواد", "بوليمرات", "تصنيع"]
+    departments: ["تكنولوجيا المعلومات", "تكنولوجيا الشبكات"]
   },
   {
     id: 5,
     name: "مصنع سيناء للمعادن",
     hours: 180,
     location: "شمال سيناء",
-    department: "هندسة تعدين",
+    department: "تكنولوجيا الأجهزة",
     matchScore: 50,
     description: "استخراج ومعالجة المعادن الخام بأحدث الوسائل التكنولوجية.",
     contact: "068-1234567",
-    departments: ["تعدين", "جيولوجيا", "استكشاف"]
+    departments: ["تكنولوجيا الأجهزة", "تكنولوجيا المعلومات"]
   },
   {
     id: 6,
     name: "مصنع الصعيد للغذائيات",
     hours: 150,
     location: "أسيوط",
-    department: "هندسة غذائية",
+    department: "تصنيع غذائي",
     matchScore: 92,
     description: "تصنيع وتعبئة المواد الغذائية وفقاً للمعايير العالمية.",
     contact: "088-2345678",
-    departments: ["غذائية", "جودة", "تغليف"]
+    departments: ["تصنيع غذائي", "تكنولوجيا المعلومات"]
   }
 ];
 
@@ -96,7 +96,7 @@ export const housing = [
     id: 4,
     name: "سكن المستقبل",
     location: "6 أكتوبر",
-    price: "---",
+    price: "1550",
     contact: "---",
     isComingSoon: true
   },
@@ -104,7 +104,7 @@ export const housing = [
     id: 5,
     name: "مجمع النخبة",
     location: "العاصمة الإدارية",
-    price: "---",
+    price: "2000",
     contact: "---",
     isComingSoon: true
   }
