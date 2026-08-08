@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createClient } from 'next-sanity';
+import { apiVersion, dataset, projectId } from '@/sanity/env';
 
-const writeClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-05-08',
-  token: process.env.SANITY_API_WRITE_TOKEN,
-  useCdn: false,
-});
+function getWriteClient() {
+  return createClient({
+    projectId,
+    dataset,
+    apiVersion,
+    token: process.env.SANITY_API_WRITE_TOKEN,
+    useCdn: false,
+  });
+}
 
 export async function POST(request) {
   try {
@@ -31,7 +34,7 @@ export async function POST(request) {
       completedHours
     }`;
     
-    const student = await writeClient.fetch(query, { phone });
+    const student = await getWriteClient().fetch(query, { phone });
 
     if (!student) {
       return NextResponse.json(
