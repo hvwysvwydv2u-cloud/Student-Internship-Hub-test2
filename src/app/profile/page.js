@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/empty-state';
 import { governorates } from '@/data/mockData';
 import { client } from '@/sanity/lib/client';
 import { useToast } from '@/lib/toast-provider';
-import { User, Phone, MapPin, GraduationCap, BookOpen, Save, Edit3, LogOut, CheckCircle, Award, Compass, Plus, Minus } from 'lucide-react';
+import { User, Phone, MapPin, GraduationCap, BookOpen, Save, Edit3, LogOut, CheckCircle, Award, Compass, Plus, Minus, Bookmark } from 'lucide-react';
 
 export default function ProfilePage() {
   const { toast } = useToast();
@@ -43,6 +43,15 @@ export default function ProfilePage() {
     }
     return { name: '', governorate: '', academicYear: '', department: '' };
   });
+  const [skills, setSkills] = useState(() => {
+    if (typeof window === 'undefined') return [];
+    const stored = localStorage.getItem('studentUser');
+    if (stored) {
+      try { return JSON.parse(stored).skills || []; } catch { /* ignore */ }
+    }
+    return [];
+  });
+  const [newSkill, setNewSkill] = useState('');
   const [completedHours, setCompletedHours] = useState(() => {
     if (typeof window === 'undefined') return 0;
     const stored = localStorage.getItem('studentUser');
@@ -97,7 +106,7 @@ export default function ProfilePage() {
       const res = await fetch('/api/auth/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: user.id, ...formData, completedHours }),
+        body: JSON.stringify({ id: user.id, ...formData, completedHours, skills }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'حدث خطأ أثناء الحفظ');
@@ -270,6 +279,10 @@ export default function ProfilePage() {
                     <Button variant="secondary" className="w-full py-2.5 text-sm" onClick={() => window.location.href = '/matching'}>
                       المطابقة الذكية
                     </Button>
+                    <Button variant="outline" className="w-full py-2.5 text-sm gap-2" onClick={() => window.location.href = '/saved'}>
+                      <Bookmark className="w-4 h-4" />
+                      Opportunities saved
+                    </Button>
                     <Button variant="outline" className="w-full py-2.5 text-sm" onClick={() => window.location.href = '/search'}>
                       البحث عن فرص جديدة
                     </Button>
@@ -324,6 +337,40 @@ export default function ProfilePage() {
                         <Input value={formData.department} onChange={(e) => setFormData({ ...formData, department: e.target.value })} disabled={!isEditing} required className={!isEditing ? "bg-transparent border-[var(--border)] text-[var(--foreground)]" : ""} />
                       </div>
                     </div>
+
+                    {isEditing && (
+                      <div className="space-y-1.5">
+                        <label className="text-xs text-[var(--text-muted)] font-bold flex items-center gap-1.5">
+                          <Award className="w-3.5 h-3.5 text-[var(--primary)]" />
+                          المهارات
+                        </label>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          {skills.map((skill, i) => (
+                            <Badge key={i} variant="secondary" className="gap-1">
+                              {skill}
+                              <button type="button" onClick={() => setSkills(skills.filter((_, idx) => idx !== i))} className="text-[var(--error)] hover:text-[var(--error)]/80 ml-1">&times;</button>
+                            </Badge>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <Input
+                            value={newSkill}
+                            onChange={(e) => setNewSkill(e.target.value)}
+                            placeholder="أضف مهارة..."
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && newSkill.trim()) {
+                                e.preventDefault();
+                                setSkills([...skills, newSkill.trim()]);
+                                setNewSkill('');
+                              }
+                            }}
+                          />
+                          <Button type="button" variant="secondary" onClick={() => { if (newSkill.trim()) { setSkills([...skills, newSkill.trim()]); setNewSkill(''); } }}>
+                            <Plus className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                     {isEditing && (
                       <div className="pt-3 flex justify-end">
                         <Button type="submit" disabled={loading} loading={loading} className="gap-2">

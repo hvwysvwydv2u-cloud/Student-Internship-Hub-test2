@@ -65,12 +65,39 @@ export const INTERNSHIPS_QUERY = defineQuery(`*[_type == "internship"]{
   "name": title,
   "slug": slug.current,
   location,
+  shortDescription,
   description,
   hours,
+  duration,
   price,
   departments,
+  academicYears,
   "image": image.asset->url,
   "factoryName": factory->name,
   "factorySlug": factory->slug.current,
   "factoryLogo": factory.logo.asset->url
+}`)
+
+export const INTERNSHIP_BY_SLUG_QUERY = defineQuery(`*[_type == "internship" && slug.current == $slug][0]{
+  _id,
+  title,
+  slug,
+  location,
+  hours,
+  duration,
+  price,
+  departments,
+  academicYears,
+  shortDescription,
+  description,
+  applyUrl,
+  contactEmail,
+  contactPhone,
+  image,
+  factory->{
+    _id,
+    name,
+    location,
+    image
+  }
 }`)

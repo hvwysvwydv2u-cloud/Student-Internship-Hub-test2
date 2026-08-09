@@ -16,6 +16,12 @@ export default {
       validation: Rule => Rule.required(),
     },
     {
+      name: 'profileImage',
+      title: 'صورة الملف الشخصي',
+      type: 'image',
+      options: { hotspot: true },
+    },
+    {
       name: 'governorate',
       title: 'المحافظة',
       type: 'string',
@@ -48,10 +54,34 @@ export default {
       },
     },
     {
+      name: 'studentId',
+      title: 'رقم الطالب',
+      description: 'رقم القيد الجامعي (اختياري)',
+      type: 'string',
+    },
+    {
+      name: 'skills',
+      title: 'المهارات',
+      description: 'مهارات الطالب和技术能力',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        layout: 'tags',
+      },
+    },
+    {
       name: 'completedHours',
       title: 'الساعات التدريبية المنجزة',
       type: 'number',
       initialValue: 0,
+    },
+    {
+      name: 'savedOpportunities',
+      title: 'الفرص المحفوظة',
+      description: 'معرفات فرص التدريب المحفوظة',
+      type: 'array',
+      of: [{ type: 'string' }],
+      readOnly: true,
     },
     {
       name: 'createdAt',

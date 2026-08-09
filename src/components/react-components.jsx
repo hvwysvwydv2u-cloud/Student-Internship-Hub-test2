@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Moon, Sun, Home, Menu, X } from 'lucide-react';
+import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Moon, Sun, Home, Menu, X, Heart } from 'lucide-react';
 import { Button, Card, CardContent, Input, Select, Badge, Progress, Avatar, Tabs, cn, Label } from './ui';
 import { useTheme } from '@/lib/theme-provider';
 import { useToast } from '@/lib/toast-provider';
@@ -191,6 +191,7 @@ const bottomNavLinks = [
   { name: 'الرئيسية', path: '/', icon: Home },
   { name: 'البحث', path: '/search', icon: Search },
   { name: 'التدريب', path: '/internship-opportunities', icon: Briefcase },
+  { name: 'المحفوظات', path: '/saved', icon: Heart },
   { name: 'حسابي', path: '/profile', icon: User },
 ];
 
@@ -263,16 +264,25 @@ export const HeroSection = ({ title, subtitle }) => (
 /* ============================================================
    FACTORY CARD
    ============================================================ */
-export const FactoryCard = ({ name, hours, location, department, matchScore, description, contact, departments, price, logo, factoryName }) => (
+export const FactoryCard = ({ name, hours, location, department, matchScore, description, contact, departments, price, logo, factoryName, isSaved, onToggleSave, slug }) => (
   <Card className="group hover:border-[var(--primary)]/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--card-shadow-hover)]" dir="rtl">
     <CardContent className="p-5">
       <div className="flex justify-between items-start mb-3">
         <Avatar src={logo} fallback={name?.substring(0, 2)} size="lg" />
-        {matchScore && (
-          <div className="text-left">
+        <div className="flex items-center gap-2">
+          {matchScore && (
             <Badge variant="outline" className="mb-1">{matchScore}% تطابق</Badge>
-          </div>
-        )}
+          )}
+          {onToggleSave && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); onToggleSave(); }}
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-[var(--primary-subtle)] transition-colors"
+              aria-label={isSaved ? "إزالة من المحفوظات" : "حفظ"}
+            >
+              <Heart className={`w-4 h-4 transition-colors ${isSaved ? 'fill-[var(--primary)] text-[var(--primary)]' : 'text-[var(--text-muted)]'}`} />
+            </button>
+          )}
+        </div>
       </div>
 
       <h3 className="text-lg font-bold mb-1 group-hover:text-[var(--primary)] transition-colors text-[var(--foreground)]">{name}</h3>
@@ -324,7 +334,7 @@ export const FactoryCard = ({ name, hours, location, department, matchScore, des
       )}
 
       <div className="flex gap-2">
-        <Link href="/internship-opportunities" className="flex-1">
+        <Link href={slug ? `/internship-opportunities/${slug}` : "/internship-opportunities"} className="flex-1">
           <Button variant="primary" size="sm" className="w-full">تقدم الآن</Button>
         </Link>
         {contact && (

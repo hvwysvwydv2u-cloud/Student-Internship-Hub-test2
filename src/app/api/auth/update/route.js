@@ -14,7 +14,7 @@ function getWriteClient() {
 
 export async function POST(request) {
   try {
-    const { id, name, governorate, academicYear, department, completedHours } = await request.json();
+    const { id, name, governorate, academicYear, department, completedHours, skills } = await request.json();
 
     if (!id || !name || !governorate || !academicYear || !department) {
       return NextResponse.json(
@@ -39,6 +39,7 @@ export async function POST(request) {
         academicYear,
         department,
         completedHours: Number(completedHours) || 0,
+        skills: Array.isArray(skills) ? skills : [],
       })
       .commit();
 
@@ -52,6 +53,7 @@ export async function POST(request) {
         academicYear: updatedStudent.academicYear,
         department: updatedStudent.department,
         completedHours: updatedStudent.completedHours || 0,
+        skills: updatedStudent.skills || [],
       }
     });
 
