@@ -1,7 +1,8 @@
-import { Avatar, Badge, Button, Separator } from "@/components/ui";
+import Link from "next/link";
+import { Avatar, Badge } from "@/components/ui";
 import { StitchLoop, StitchSection } from "@/components/stitch-loop";
 import { EmptyState } from "@/components/empty-state";
-import { Phone } from "lucide-react";
+import { MapPin, Clock, ArrowLeft } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { FACTORIES_QUERY } from "@/sanity/lib/queries";
 
@@ -31,57 +32,76 @@ export default async function FactoriesPage() {
     <StitchSection>
       <div className="mb-10">
         <h2 className="text-3xl font-bold mb-2 text-[var(--foreground)]">دليل المصانع</h2>
-        <p className="text-[var(--text-secondary)]">تعرّف على المصانع الشريكة وopportunities التدريب المتاحة.</p>
+        <p className="text-[var(--text-secondary)]">
+          تعرّف على المصانع الشريكة وفرص التدريب المتاحة.
+        </p>
       </div>
 
-      <div className="space-y-10">
+      <div className="space-y-8">
         {factories.map((factory, index) => (
           <StitchLoop key={factory._id} index={index}>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="md:col-span-1">
-                <Avatar
-                  src={factory.logo}
-                  fallback={factory.name.substring(0, 2)}
-                  size="2xl"
-                  className="mb-3"
-                />
-                <p className="text-sm font-bold text-[var(--foreground)]">{factory.name}</p>
-                <p className="text-xs text-[var(--text-muted)]">{factory.location}</p>
-              </div>
-              <div className="md:col-span-3">
-                <h3 className="text-xl font-bold mb-3 text-[var(--primary)]">{factory.name}</h3>
-                <p className="text-[var(--text-secondary)] mb-5 leading-relaxed">{factory.description}</p>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-5">
-                  <div>
-                    <p className="text-xs text-[var(--text-muted)] mb-1">الأقسام المتاحة</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {factory.departments?.map(d => <Badge key={d} variant="secondary">{d}</Badge>)}
-                    </div>
+            <Link href={`/factories/${factory.slug}`}>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-5 p-5 md:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--primary)]/30 transition-all duration-200 cursor-pointer group">
+                <div className="md:col-span-1 flex md:flex-col items-center md:items-start gap-4">
+                  <Avatar
+                    src={factory.logo}
+                    fallback={factory.name.substring(0, 2)}
+                    size="2xl"
+                    className="shrink-0"
+                  />
+                  <div className="md:mt-1">
+                    <p className="text-sm font-bold text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">
+                      {factory.name}
+                    </p>
+                    <p className="text-xs text-[var(--text-muted)] flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3" />
+                      {factory.location}
+                    </p>
                   </div>
-                  <div>
-                    <p className="text-xs text-[var(--text-muted)] mb-1">ساعات التدريب</p>
-                    <p className="text-[var(--foreground)] font-medium text-sm">{factory.hours} ساعة</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-[var(--text-muted)] mb-1">الموقع</p>
-                    <p className="text-[var(--foreground)] font-medium text-sm">{factory.location}</p>
-                  </div>
-                  {factory.price && (
-                    <div>
-                      <p className="text-xs text-[var(--text-muted)] mb-1">المكافأة / التكلفة</p>
-                      <p className="text-[var(--primary)] font-bold text-sm">{factory.price}</p>
-                    </div>
-                  )}
                 </div>
+                <div className="md:col-span-3">
+                  <p className="text-[var(--text-secondary)] text-sm mb-4 leading-relaxed line-clamp-2">
+                    {factory.shortDescription || factory.description}
+                  </p>
 
-                <Button variant="secondary" className="gap-2">
-                  <Phone className="w-4 h-4" />
-                  تواصل مع المصنع
-                </Button>
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-[var(--text-muted)] mb-4">
+                    {factory.hours && (
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-[var(--primary)]" />
+                        {factory.hours} ساعة تدريب
+                      </span>
+                    )}
+                    {factory.departments && factory.departments.length > 0 && (
+                      <span className="flex items-center gap-1">
+                        {factory.departments.length} أقسام
+                      </span>
+                    )}
+                    {factory.price && (
+                      <span className="text-[var(--primary)] font-semibold">{factory.price}</span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap gap-1.5">
+                      {factory.departments?.slice(0, 3).map((d) => (
+                        <Badge key={d} variant="secondary" className="text-[10px]">
+                          {d}
+                        </Badge>
+                      ))}
+                      {factory.departments && factory.departments.length > 3 && (
+                        <Badge variant="secondary" className="text-[10px]">
+                          +{factory.departments.length - 3}
+                        </Badge>
+                      )}
+                    </div>
+                    <span className="text-xs text-[var(--primary)] font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
+                      عرض التفاصيل
+                      <ArrowLeft className="w-3.5 h-3.5" />
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-            {index < factories.length - 1 && <Separator className="mt-10" />}
+            </Link>
           </StitchLoop>
         ))}
       </div>

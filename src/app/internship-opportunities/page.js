@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FactoryCard } from "@/components/react-components";
 import { StitchLoop, StitchSection } from "@/components/stitch-loop";
 import { EmptyState } from "@/components/empty-state";
@@ -35,13 +36,15 @@ export default async function InternshipOpportunities() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {displayItems.map((item, index) => (
             <StitchLoop key={item._id} index={index}>
-              <FactoryCard
-                {...item}
-                name={item.title || item.name}
-                description={item.description}
-                logo={item.image || item.logo || item.factoryLogo}
-                factoryName={item.factoryName}
-              />
+              <Link href={item.factorySlug ? `/factories/${item.factorySlug}` : "#"}>
+                <FactoryCard
+                  {...item}
+                  name={item.title || item.name}
+                  description={item.description}
+                  logo={item.image || item.logo || item.factoryLogo}
+                  factoryName={item.factoryName}
+                />
+              </Link>
             </StitchLoop>
           ))}
         </div>

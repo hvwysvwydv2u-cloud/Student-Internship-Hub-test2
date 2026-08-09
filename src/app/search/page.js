@@ -33,7 +33,7 @@ export default async function SearchPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {factories.map((factory, index) => (
             <StitchLoop key={factory._id} index={index}>
-              <Link href="/internship-opportunities">
+              <Link href={factory.slug ? `/factories/${factory.slug}` : "/internship-opportunities"}>
                 <FactoryCard {...factory} />
               </Link>
             </StitchLoop>
