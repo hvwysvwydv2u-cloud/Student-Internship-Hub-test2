@@ -1,4 +1,4 @@
-import { HeroSection, FactoryCard } from "@/components/react-components";
+import { HeroSection } from "@/components/react-components";
 import { StitchLoop, StitchSection } from "@/components/stitch-loop";
 import { Card } from "@/components/ui";
 import { Search, CheckCircle, Building2, Briefcase } from "lucide-react";
@@ -13,7 +13,7 @@ export default function Home() {
   ];
 
   const stats = [
-    { label: "طلاب مسجلون", value: "12000" },
+    { label: "طلاب مسجلون", value: "12,000" },
     { label: "فرص متاحة", value: "1,200+" },
     { label: "مصانع شريكة", value: "450+" },
   ];
@@ -21,18 +21,18 @@ export default function Home() {
   return (
     <div>
       <HeroSection title="ابحث عن تدريبك المثالي" />
-      
+
       <StitchSection>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {features.map((item, index) => (
             <StitchLoop key={item.path} index={index}>
               <Link href={item.path}>
-                <Card className="p-6 cursor-pointer hover:border-green-500 transition-all h-full">
-                  <div className="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center text-green-500 mb-4">
+                <Card className="p-5 cursor-pointer hover:border-[var(--primary)]/30 transition-all duration-200 h-full group hover:shadow-[var(--card-shadow-hover)]">
+                  <div className="w-10 h-10 bg-[var(--primary-subtle)] rounded-xl flex items-center justify-center text-[var(--primary)] mb-3">
                     {item.icon}
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-white/40 text-sm">{item.desc}</p>
+                  <h3 className="text-base font-bold mb-1 text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">{item.title}</h3>
+                  <p className="text-[var(--text-secondary)] text-sm">{item.desc}</p>
                 </Card>
               </Link>
             </StitchLoop>
@@ -40,14 +40,14 @@ export default function Home() {
         </div>
       </StitchSection>
 
-      <div className="bg-surface py-16 border-y border-white/5">
+      <div className="py-14 border-y border-[var(--border)] transition-colors" style={{ backgroundColor: 'var(--surface)' }}>
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
             {stats.map((stat, index) => (
               <StitchLoop key={stat.label} index={index}>
                 <div>
-                  <h2 className="text-5xl font-black text-green-500 mb-2">{stat.value}</h2>
-                  <p className="text-white/60 font-medium">{stat.label}</p>
+                  <h2 className="text-4xl md:text-5xl font-black text-[var(--primary)] mb-2">{stat.value}</h2>
+                  <p className="text-[var(--text-secondary)] font-medium">{stat.label}</p>
                 </div>
               </StitchLoop>
             ))}

@@ -1,52 +1,103 @@
 @import "tailwindcss";
 
+/* ============================================================
+   DESIGN TOKENS — Light Mode (default) & Dark Mode
+   ============================================================ */
 @theme {
-  --color-background: #08090a;
-  --color-surface: #101214;
-  --color-surface-elevated: #171a1d;
-  --color-primary: #00e676;
-  --color-primary-hover: #00ff84;
-  --color-primary-muted: #00b85c;
-  --color-primary-subtle: rgba(0, 230, 118, 0.08);
-  --color-primary-glow: rgba(0, 230, 118, 0.25);
-  --color-border: #1f2428;
-  --color-border-hover: #2d343c;
-  --color-text-primary: #f0f4f8;
-  --color-text-secondary: #9ca3af;
-  --color-text-muted: #6b7280;
-  --color-accent-amber: #fbbf24;
-  --color-accent-red: #ef4444;
-  --color-accent-blue: #3b82f6;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  
-  --font-sans: "Geist", "Cairo", system-ui, sans-serif;
+  --font-sans: "Geist", "Noto Sans Arabic", "Cairo", system-ui, sans-serif;
   --font-mono: "Geist Mono", "Fira Code", monospace;
-  
+
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
   --radius-xl: 20px;
   --radius-full: 9999px;
-  
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 24px rgba(0, 230, 118, 0.15);
-  --shadow-glow-lg: 0 0 48px rgba(0, 230, 118, 0.2);
-  
+
   --transition-fast: 120ms ease-out;
   --transition-base: 200ms ease-out;
   --transition-slow: 300ms ease-out;
 }
 
-@layer base {
-  :root {
-    --background: #08090a;
-    --foreground: #f0f4f8;
-  }
+/* ============================================================
+   CSS Custom Properties — Light Mode (root defaults)
+   ============================================================ */
+:root {
+  --background: #f8f9fa;
+  --foreground: #111827;
+  --surface: #ffffff;
+  --surface-elevated: #f1f3f5;
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-muted: #059669;
+  --primary-subtle: rgba(5, 150, 105, 0.08);
+  --primary-glow: rgba(5, 150, 105, 0.12);
+  --border: #e5e7eb;
+  --border-hover: #d1d5db;
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --accent-amber: #d97706;
+  --accent-red: #dc2626;
+  --accent-blue: #2563eb;
+  --success: #059669;
+  --warning: #d97706;
+  --error: #dc2626;
+  --nav-bg: rgba(255, 255, 255, 0.88);
+  --nav-border: rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --input-bg: #ffffff;
+  --scrollbar-track: #f1f3f5;
+  --scrollbar-thumb: #d1d5db;
+  --scrollbar-thumb-hover: #9ca3af;
+  --skeleton-base: #e5e7eb;
+  --skeleton-shine: #f3f4f6;
+  --bottom-nav-bg: rgba(255, 255, 255, 0.95);
+  --bottom-nav-border: rgba(0, 0, 0, 0.08);
+}
 
+/* ============================================================
+   CSS Custom Properties — Dark Mode
+   ============================================================ */
+.dark {
+  --background: #0a0c0e;
+  --foreground: #f0f4f8;
+  --surface: #111315;
+  --surface-elevated: #181b1e;
+  --primary: #00e676;
+  --primary-hover: #00ff84;
+  --primary-muted: #00b85c;
+  --primary-subtle: rgba(0, 230, 118, 0.08);
+  --primary-glow: rgba(0, 230, 118, 0.25);
+  --border: #1e2428;
+  --border-hover: #2d343c;
+  --text-primary: #f0f4f8;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --accent-amber: #fbbf24;
+  --accent-red: #ef4444;
+  --accent-blue: #3b82f6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --nav-bg: rgba(10, 12, 14, 0.88);
+  --nav-border: rgba(0, 230, 118, 0.12);
+  --card-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --input-bg: #111315;
+  --scrollbar-track: #0a0c0e;
+  --scrollbar-thumb: #1e2428;
+  --scrollbar-thumb-hover: #2d343c;
+  --skeleton-base: #1e2428;
+  --skeleton-shine: #2a2f34;
+  --bottom-nav-bg: rgba(10, 12, 14, 0.95);
+  --bottom-nav-border: rgba(0, 230, 118, 0.12);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+@layer base {
   * {
     box-sizing: border-box;
   }
@@ -74,6 +125,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
 
   [dir="rtl"] {
@@ -81,29 +133,30 @@
   }
 
   ::selection {
-    background: var(--color-primary);
-    color: #08090a;
+    background: var(--primary);
+    color: #ffffff;
   }
 
+  /* Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--background);
+    background: var(--scrollbar-track);
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--color-border);
+    background: var(--scrollbar-thumb);
     border-radius: var(--radius-full);
-    border: 2px solid var(--background);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-border-hover);
+    background: var(--scrollbar-thumb-hover);
   }
   ::-webkit-scrollbar-corner {
-    background: var(--background);
+    background: var(--scrollbar-track);
   }
 
+  /* Number inputs */
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -114,12 +167,97 @@
   }
 }
 
-/* Focus visible styles */
+/* ============================================================
+   SKELETON ANIMATION
+   ============================================================ */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.skeleton {
+  background: var(--skeleton-base);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--skeleton-shine),
+    transparent
+  );
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   TOAST ANIMATION
+   ============================================================ */
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+}
+
+.toast-enter {
+  animation: toast-enter 0.2s ease-out;
+}
+
+.toast-exit {
+  animation: toast-exit 0.15s ease-in forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-enter, .toast-exit {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   FOCUS VISIBLE
+   ============================================================ */
 .focus-visible-ring:focus-visible {
-  outline: none;
-  ring: 2px;
-  ring-color: var(--color-primary);
-  ring-opacity: 0.4;
-  ring-offset: 2px;
-  ring-offset-color: var(--background);
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   BOTTOM NAV SAFE AREA
+   ============================================================ */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .pb-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+  }
 }

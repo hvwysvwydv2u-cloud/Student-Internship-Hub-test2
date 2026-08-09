@@ -11,22 +11,16 @@ export function cn(...inputs) {
 export const Button = React.forwardRef(({
   className,
   variant = 'primary',
-  size = 'md',
   disabled,
   loading,
   children,
   ...props
 }, ref) => {
   const variants = {
-    primary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-primary text-background transition-all duration-200 hover:bg-primary-hover hover:shadow-[0_0_24px_rgba(0,230,118,0.15)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:transform-none disabled:hover:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-    secondary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-surface-elevated text-white border border-border hover:bg-surface hover:border-border-hover hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-    ghost: 'inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-    outline: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl border border-border text-white hover:border-primary/50 hover:bg-primary-subtle hover:text-primary transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background',
-  };
-  const sizes = {
-    sm: 'px-3 py-1.5 text-xs',
-    md: 'px-5 py-2.5 text-sm',
-    lg: 'px-7 py-3.5 text-base',
+    primary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-[var(--primary)] text-white transition-all duration-200 hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
+    secondary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-[var(--surface-elevated)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--surface)] hover:border-[var(--border-hover)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
+    ghost: 'inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
+    outline: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)]/50 hover:bg-[var(--primary-subtle)] hover:text-[var(--primary)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
   };
   return (
     <button
@@ -34,7 +28,6 @@ export const Button = React.forwardRef(({
       className={cn(
         'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 active:scale-[0.98]',
         variants[variant],
-        sizes[size],
         className
       )}
       disabled={disabled || loading}
@@ -55,7 +48,8 @@ Button.displayName = 'Button';
 export const Card = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-border-hover hover:shadow-lg', className)}
+    className={cn('bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-[var(--card-shadow-hover)]', className)}
+    style={{ boxShadow: 'var(--card-shadow)' }}
     {...props}
   />
 ));
@@ -64,7 +58,7 @@ Card.displayName = 'Card';
 export const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('p-6 border-b border-border', className)}
+    className={cn('p-6 border-b border-[var(--border)]', className)}
     {...props}
   />
 ));
@@ -83,7 +77,7 @@ export const Input = React.forwardRef(({ className, type = 'text', ...props }, r
   <input
     ref={ref}
     type={type}
-    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-surface border border-border rounded-xl text-white placeholder:text-gray-500 transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background', className)}
+    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-[var(--input-bg)] border border-[var(--border)] rounded-xl text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:bg-[var(--surface-elevated)] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]', className)}
     {...props}
   />
 ));
@@ -92,7 +86,7 @@ Input.displayName = 'Input';
 export const Textarea = React.forwardRef(({ className, ...props }, ref) => (
   <textarea
     ref={ref}
-    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-surface border border-border rounded-xl text-white placeholder:text-gray-500 transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background min-h-[100px] resize-y', className)}
+    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-[var(--input-bg)] border border-[var(--border)] rounded-xl text-[var(--foreground)] placeholder:text-[var(--text-muted)] transition-all duration-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:bg-[var(--surface-elevated)] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] min-h-[100px] resize-y', className)}
     {...props}
   />
 ));
@@ -101,12 +95,12 @@ Textarea.displayName = 'Textarea';
 export const Select = React.forwardRef(({ className, options = [], placeholder, ...props }, ref) => (
   <select
     ref={ref}
-    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-surface border border-border rounded-xl text-white appearance-none cursor-pointer transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-surface-elevated disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background', className)}
+    className={cn('w-full px-4 py-3 text-sm sm:text-base bg-[var(--input-bg)] border border-[var(--border)] rounded-xl text-[var(--foreground)] appearance-none cursor-pointer transition-all duration-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 focus:bg-[var(--surface-elevated)] disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]', className)}
     {...props}
   >
     {placeholder && <option value="" disabled selected>{placeholder}</option>}
     {options.map((opt) => (
-      <option key={opt.value || opt} value={opt.value || opt} className="bg-surface">
+      <option key={opt.value || opt} value={opt.value || opt} className="bg-[var(--surface)]">
         {opt.label || opt}
       </option>
     ))}
@@ -116,9 +110,9 @@ Select.displayName = 'Select';
 
 export const Badge = ({ className, variant = 'primary', ...props }) => {
   const variants = {
-    primary: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-subtle text-primary border border-primary/20',
-    secondary: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-white/5 text-gray-300 border border-white/10',
-    outline: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border border-primary text-primary',
+    primary: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[var(--primary-subtle)] text-[var(--primary)] border border-[var(--primary)]/20',
+    secondary: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-[var(--surface-elevated)] text-[var(--text-secondary)] border border-[var(--border)]',
+    outline: 'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border border-[var(--primary)] text-[var(--primary)]',
   };
   return (
     <span
@@ -136,9 +130,9 @@ export const Progress = ({ value = 0, className, size = 'md', showLabel = false 
   };
   const clampedValue = Math.max(0, Math.min(100, value));
   return (
-    <div className={cn('w-full bg-surface-elevated rounded-full overflow-hidden', sizes[size], className)}>
+    <div className={cn('w-full bg-[var(--surface-elevated)] rounded-full overflow-hidden', sizes[size], className)}>
       <div
-        className="h-full bg-primary rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(0,230,118,0.5)]"
+        className="h-full bg-[var(--primary)] rounded-full transition-all duration-500 ease-out"
         style={{ width: `${clampedValue}%` }}
         role="progressbar"
         aria-valuenow={clampedValue}
@@ -146,17 +140,17 @@ export const Progress = ({ value = 0, className, size = 'md', showLabel = false 
         aria-valuemax={100}
       />
       {showLabel && (
-        <span className="block text-right text-xs text-gray-400 mt-1">{clampedValue}%</span>
+        <span className="block text-right text-xs text-[var(--text-muted)] mt-1">{clampedValue}%</span>
       )}
     </div>
   );
 };
 
 export const Separator = ({ className }) => (
-  <div className={cn('h-[1px] w-full bg-border', className)} />
+  <div className={cn('h-[1px] w-full bg-[var(--border)]', className)} />
 );
 
-export const Avatar = ({ src, fallback, className, size = 'md' }) => {
+export const Avatar = ({ src, alt, fallback, className, size = 'md' }) => {
   const sizes = {
     sm: 'h-8 w-8 text-sm',
     md: 'h-10 w-10 text-base',
@@ -166,14 +160,14 @@ export const Avatar = ({ src, fallback, className, size = 'md' }) => {
     '3xl': 'h-24 w-24 text-3xl',
   };
   return (
-    <div className={cn('inline-flex items-center justify-center rounded-xl bg-primary-subtle border border-primary/20 text-primary font-semibold overflow-hidden', sizes[size], className)}>
-      {src ? <img src={src} alt="" className="h-full w-full object-cover" /> : <span>{fallback}</span>}
+    <div className={cn('inline-flex items-center justify-center rounded-xl bg-[var(--primary-subtle)] border border-[var(--primary)]/20 text-[var(--primary)] font-semibold overflow-hidden', sizes[size], className)}>
+      {src ? <img src={src} alt={alt || ''} className="h-full w-full object-cover" loading="lazy" /> : <span>{fallback}</span>}
     </div>
   );
 };
 
 export const Tabs = ({ tabs = [], activeTab, onChange, className }) => (
-  <div className={cn('flex gap-1 p-1 bg-surface-elevated rounded-xl border border-border', className)}>
+  <div className={cn('flex gap-1 p-1 bg-[var(--surface-elevated)] rounded-xl border border-[var(--border)]', className)}>
     {tabs.map((tab) => (
       <button
         key={tab.id}
@@ -181,8 +175,8 @@ export const Tabs = ({ tabs = [], activeTab, onChange, className }) => (
         className={cn(
           'flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200',
           activeTab === tab.id
-            ? 'bg-primary text-background shadow-md'
-            : 'text-gray-400 hover:text-white hover:bg-white/5'
+            ? 'bg-[var(--primary)] text-white shadow-md'
+            : 'text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)]'
         )}
       >
         {tab.label}
@@ -192,16 +186,19 @@ export const Tabs = ({ tabs = [], activeTab, onChange, className }) => (
 );
 
 export const Label = ({ className, required, children, ...props }) => (
-  <label className={cn('block text-xs sm:text-sm font-semibold text-gray-300 mb-1.5 flex items-center gap-1.5', className)} {...props}>
+  <label className={cn('block text-xs sm:text-sm font-semibold text-[var(--text-secondary)] mb-1.5 flex items-center gap-1.5', className)} {...props}>
     {children}
-    {required && <span className="text-primary" aria-hidden="true">*</span>}
+    {required && <span className="text-[var(--primary)]" aria-hidden="true">*</span>}
   </label>
 );
 
 export const CardHover = React.forwardRef(({ className, children, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn('bg-surface border border-border rounded-2xl overflow-hidden transition-all duration-300 hover:border-border-hover hover:shadow-lg hover:-translate-y-1', className)}
+    className={cn('bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden transition-all duration-200 hover:border-[var(--border-hover)] hover:-translate-y-1', className)}
+    style={{ boxShadow: 'var(--card-shadow)' }}
+    onMouseEnter={(e) => { e.currentTarget.style.boxShadow = 'var(--card-shadow-hover)'; }}
+    onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'var(--card-shadow)'; }}
     {...props}
   >
     {children}
