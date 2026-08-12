@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Card, CardContent, Button, Badge } from '@/components/ui';
 import { client } from '@/sanity/lib/client';
 import { INTERNSHIP_BY_SLUG_QUERY } from '@/sanity/lib/queries';
-import { MapPin, Clock, DollarSign, Building2, ArrowRight, ExternalLink, Mail, Phone, Globe } from 'lucide-react';
+import { MapPin, Clock, DollarSign, Building2, ArrowRight, ExternalLink, Mail, Phone, Globe, MessageCircle } from 'lucide-react';
 
 export default function InternshipDetailPage() {
   const params = useParams();
@@ -64,7 +64,12 @@ export default function InternshipDetailPage() {
   const factorySlug = factory?.slug?.current;
   const factoryName = factory?.name;
 
-  const whatsappPhone = (factoryPhone || '').replace(/[^0-9]/g, '');
+  const rawDigits = (factoryPhone || '').replace(/[^0-9]/g, '');
+  const whatsappNumber = rawDigits.startsWith('20')
+    ? rawDigits
+    : rawDigits.startsWith('0')
+      ? `20${rawDigits.slice(1)}`
+      : rawDigits;
   const hasApplyUrl = !!internship.applyUrl;
   const hasFactoryContact = !!(factoryPhone || factoryEmail);
   const hasInternshipContact = !!(internship.contactEmail || internship.contactPhone);
@@ -200,39 +205,57 @@ export default function InternshipDetailPage() {
           {factory && (
             <Card>
               <CardContent className="p-5 space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-xl bg-[var(--surface-elevated)] flex items-center justify-center border border-[var(--border)] shrink-0 overflow-hidden">
-                    {factory.image ? (
-                      <img src={factory.image} alt={factoryName} className="w-full h-full object-cover" />
-                    ) : (
-                      <Building2 className="w-7 h-7 text-[var(--primary)]" />
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="font-bold text-[var(--foreground)] truncate">{factoryName}</h3>
-                    {factory.location && (
-                      <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1">
-                        <MapPin className="w-3 h-3 shrink-0" />
-                        <span className="truncate">{factory.location}</span>
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {factorySlug && (
-                  <Link href={`/factories/${factorySlug}`}>
-                    <Button variant="ghost" className="w-full text-sm gap-2">
-                      عرض ملف الشركة
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </Button>
+                {/* Clickable header — links to factory profile */}
+                {factorySlug ? (
+                  <Link
+                    href={`/factories/${factorySlug}`}
+                    className="flex items-center gap-4 group/header rounded-xl -m-2 p-2 transition-colors hover:bg-[var(--primary-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                  >
+                    <div className="w-14 h-14 rounded-xl bg-[var(--surface-elevated)] flex items-center justify-center border border-[var(--border)] shrink-0 overflow-hidden">
+                      {factory.image ? (
+                        <img src={factory.image} alt={factoryName} className="w-full h-full object-cover" />
+                      ) : (
+                        <Building2 className="w-7 h-7 text-[var(--primary)]" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-[var(--foreground)] truncate group-hover/header:text-[var(--primary)] transition-colors">{factoryName}</h3>
+                      {factory.location && (
+                        <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1">
+                          <MapPin className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{factory.location}</span>
+                        </p>
+                      )}
+                    </div>
                   </Link>
+                ) : (
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-xl bg-[var(--surface-elevated)] flex items-center justify-center border border-[var(--border)] shrink-0 overflow-hidden">
+                      {factory.image ? (
+                        <img src={factory.image} alt={factoryName} className="w-full h-full object-cover" />
+                      ) : (
+                        <Building2 className="w-7 h-7 text-[var(--primary)]" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-bold text-[var(--foreground)] truncate">{factoryName}</h3>
+                      {factory.location && (
+                        <p className="text-sm text-[var(--text-secondary)] flex items-center gap-1">
+                          <MapPin className="w-3 h-3 shrink-0" />
+                          <span className="truncate">{factory.location}</span>
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 )}
 
-                <div className="space-y-2.5">
+                {/* Contact links — each row is a full-width clickable target */}
+                <div className="space-y-1">
                   {factoryPhone && (
                     <a
                       href={`tel:${factoryPhone}`}
-                      className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors py-1"
+                      className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--primary-subtle)] rounded-lg px-2 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40"
+                      aria-label={`الاتصال على ${factoryPhone}`}
                     >
                       <Phone className="w-4 h-4 text-[var(--primary)] shrink-0" />
                       <span dir="ltr">{factoryPhone}</span>
@@ -241,7 +264,8 @@ export default function InternshipDetailPage() {
                   {factoryEmail && (
                     <a
                       href={`mailto:${factoryEmail}`}
-                      className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors py-1"
+                      className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--primary-subtle)] rounded-lg px-2 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40"
+                      aria-label={`إرسال بريد إلكتروني إلى ${factoryEmail}`}
                     >
                       <Mail className="w-4 h-4 text-[var(--primary)] shrink-0" />
                       <span className="truncate">{factoryEmail}</span>
@@ -252,38 +276,53 @@ export default function InternshipDetailPage() {
                       href={factoryWebsite}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] transition-colors py-1"
+                      className="flex items-center gap-3 text-sm text-[var(--text-secondary)] hover:text-[var(--primary)] hover:bg-[var(--primary-subtle)] rounded-lg px-2 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40"
+                      aria-label={`زيارة الموقع الإلكتروني ${factoryWebsite.replace(/^https?:\/\//, '')}`}
                     >
                       <Globe className="w-4 h-4 text-[var(--primary)] shrink-0" />
                       <span className="truncate" dir="ltr">{factoryWebsite.replace(/^https?:\/\//, '')}</span>
                     </a>
                   )}
                   {!factoryPhone && !factoryEmail && !factoryWebsite && (
-                    <p className="text-sm text-[var(--text-muted)] py-1">
+                    <p className="text-sm text-[var(--text-muted)] py-2 px-2">
                       لا توجد معلومات تواصل متاحة.
                     </p>
                   )}
                 </div>
 
+                {/* Primary action buttons */}
                 {factoryPhone && (
                   <div className="pt-3 border-t border-[var(--border)] space-y-2">
                     <a href={`tel:${factoryPhone}`}>
-                      <Button variant="primary" className="w-full gap-2">
+                      <Button variant="primary" className="w-full gap-2" aria-label={`الاتصال بـ ${factoryName}`}>
                         <Phone className="w-4 h-4" />
                         اتصل الآن
                       </Button>
                     </a>
-                    {whatsappPhone.length >= 10 && (
+                    {whatsappNumber.length >= 11 && (
                       <a
-                        href={`https://wa.me/${whatsappPhone}`}
+                        href={`https://wa.me/${whatsappNumber}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        <Button variant="outline" className="w-full gap-2 text-sm">
+                        <Button variant="outline" className="w-full gap-2 text-sm" aria-label={`التواصل مع ${factoryName} عبر واتساب`}>
+                          <MessageCircle className="w-4 h-4" />
                           تواصل عبر واتساب
                         </Button>
                       </a>
                     )}
+                  </div>
+                )}
+
+                {/* Fallback CTA when no phone but slug exists */}
+                {!factoryPhone && factorySlug && (
+                  <div className="pt-3 border-t border-[var(--border)]">
+                    <Link href={`/factories/${factorySlug}`}>
+                      <Button variant="primary" className="w-full gap-2" aria-label={`عرض ملف ${factoryName} للتواصل`}>
+                        <Building2 className="w-4 h-4" />
+                        تواصل مع {factoryName}
+                      </Button>
+                    </Link>
                   </div>
                 )}
               </CardContent>
