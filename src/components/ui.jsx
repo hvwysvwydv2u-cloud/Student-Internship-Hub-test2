@@ -14,6 +14,7 @@ export const Button = React.forwardRef(({
   disabled,
   loading,
   children,
+  asChild,
   ...props
 }, ref) => {
   const variants = {
@@ -22,14 +23,25 @@ export const Button = React.forwardRef(({
     ghost: 'inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
     outline: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)]/50 hover:bg-[var(--primary-subtle)] hover:text-[var(--primary)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
   };
+  const classes = cn(
+    'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 active:scale-[0.98]',
+    variants[variant],
+    className
+  );
+
+  if (asChild) {
+    return React.cloneElement(children, {
+      ref,
+      className: cn(classes, children.props.className),
+      disabled: disabled || loading,
+      ...props,
+    });
+  }
+
   return (
     <button
       ref={ref}
-      className={cn(
-        'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 active:scale-[0.98]',
-        variants[variant],
-        className
-      )}
+      className={classes}
       disabled={disabled || loading}
       {...props}
     >

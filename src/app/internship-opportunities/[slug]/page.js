@@ -48,9 +48,9 @@ export default function InternshipDetailPage() {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center" dir="rtl">
         <p className="text-[var(--text-secondary)] text-lg mb-4">{error}</p>
-        <Link href="/internship-opportunities">
-          <Button variant="primary">العودة للفرص</Button>
-        </Link>
+        <Button asChild variant="primary">
+          <Link href="/internship-opportunities">العودة للفرص</Link>
+        </Button>
       </div>
     );
   }
@@ -72,7 +72,6 @@ export default function InternshipDetailPage() {
       : rawDigits;
   const hasApplyUrl = !!internship.applyUrl;
   const hasFactoryContact = !!(factoryPhone || factoryEmail);
-  const hasInternshipContact = !!(internship.contactEmail || internship.contactPhone);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8" dir="rtl">
@@ -157,20 +156,20 @@ export default function InternshipDetailPage() {
                 <h3 className="text-lg font-bold text-[var(--foreground)]">التواصل والتقديم</h3>
                 <div className="flex flex-wrap gap-3">
                   {hasApplyUrl && (
-                    <a href={internship.applyUrl} target="_blank" rel="noopener noreferrer">
-                      <Button variant="primary" className="gap-2">
+                    <Button asChild variant="primary" className="gap-2">
+                      <a href={internship.applyUrl} target="_blank" rel="noopener noreferrer">
                         <ExternalLink className="w-4 h-4" />
                         تقديم الآن
-                      </Button>
-                    </a>
+                      </a>
+                    </Button>
                   )}
                   {!hasApplyUrl && hasFactoryContact && factorySlug && (
-                    <Link href={`/factories/${factorySlug}`}>
-                      <Button variant="primary" className="gap-2">
+                    <Button asChild variant="primary" className="gap-2">
+                      <Link href={`/factories/${factorySlug}`}>
                         <Building2 className="w-4 h-4" />
                         تواصل مع {factoryName || 'الشركة'} للتقديم
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   )}
                   {!hasApplyUrl && !hasFactoryContact && (
                     <p className="text-sm text-[var(--text-muted)]">
@@ -179,20 +178,20 @@ export default function InternshipDetailPage() {
                   )}
 
                   {internship.contactEmail && (
-                    <a href={`mailto:${internship.contactEmail}`}>
-                      <Button variant="secondary" className="gap-2">
+                    <Button asChild variant="secondary" className="gap-2">
+                      <a href={`mailto:${internship.contactEmail}`}>
                         <Mail className="w-4 h-4" />
                         {internship.contactEmail}
-                      </Button>
-                    </a>
+                      </a>
+                    </Button>
                   )}
                   {internship.contactPhone && (
-                    <a href={`tel:${internship.contactPhone}`}>
-                      <Button variant="secondary" className="gap-2">
+                    <Button asChild variant="secondary" className="gap-2">
+                      <a href={`tel:${internship.contactPhone}`}>
                         <Phone className="w-4 h-4" />
                         <span dir="ltr">{internship.contactPhone}</span>
-                      </Button>
-                    </a>
+                      </a>
+                    </Button>
                   )}
                 </div>
               </div>
@@ -209,7 +208,7 @@ export default function InternshipDetailPage() {
                 {factorySlug ? (
                   <Link
                     href={`/factories/${factorySlug}`}
-                    className="flex items-center gap-4 group/header rounded-xl -m-2 p-2 transition-colors hover:bg-[var(--primary-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+                    className="flex items-center gap-4 group/header rounded-xl p-2 transition-colors hover:bg-[var(--primary-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
                   >
                     <div className="w-14 h-14 rounded-xl bg-[var(--surface-elevated)] flex items-center justify-center border border-[var(--border)] shrink-0 overflow-hidden">
                       {factory.image ? (
@@ -293,23 +292,23 @@ export default function InternshipDetailPage() {
                 {/* Primary action buttons */}
                 {factoryPhone && (
                   <div className="pt-3 border-t border-[var(--border)] space-y-2">
-                    <a href={`tel:${factoryPhone}`}>
-                      <Button variant="primary" className="w-full gap-2" aria-label={`الاتصال بـ ${factoryName}`}>
+                    <Button asChild variant="primary" className="w-full gap-2" aria-label={`الاتصال بـ ${factoryName}`}>
+                      <a href={`tel:${factoryPhone}`}>
                         <Phone className="w-4 h-4" />
                         اتصل الآن
-                      </Button>
-                    </a>
-                    {whatsappNumber.length >= 11 && (
-                      <a
-                        href={`https://wa.me/${whatsappNumber}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Button variant="outline" className="w-full gap-2 text-sm" aria-label={`التواصل مع ${factoryName} عبر واتساب`}>
+                      </a>
+                    </Button>
+                    {whatsappNumber.length === 12 && (
+                      <Button asChild variant="outline" className="w-full gap-2 text-sm" aria-label={`التواصل مع ${factoryName} عبر واتساب`}>
+                        <a
+                          href={`https://wa.me/${whatsappNumber}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
                           <MessageCircle className="w-4 h-4" />
                           تواصل عبر واتساب
-                        </Button>
-                      </a>
+                        </a>
+                      </Button>
                     )}
                   </div>
                 )}
@@ -317,12 +316,12 @@ export default function InternshipDetailPage() {
                 {/* Fallback CTA when no phone but slug exists */}
                 {!factoryPhone && factorySlug && (
                   <div className="pt-3 border-t border-[var(--border)]">
-                    <Link href={`/factories/${factorySlug}`}>
-                      <Button variant="primary" className="w-full gap-2" aria-label={`عرض ملف ${factoryName} للتواصل`}>
+                    <Button asChild variant="primary" className="w-full gap-2" aria-label={`عرض ملف ${factoryName} للتواصل`}>
+                      <Link href={`/factories/${factorySlug}`}>
                         <Building2 className="w-4 h-4" />
                         تواصل مع {factoryName}
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </div>
                 )}
               </CardContent>
