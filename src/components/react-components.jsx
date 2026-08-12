@@ -338,9 +338,11 @@ export const FactoryCard = ({ name, hours, location, department, matchScore, des
           <Button variant="primary" size="sm" className="w-full">تقدم الآن</Button>
         </Link>
         {contact && (
-          <Button variant="secondary" size="sm" className="px-3" aria-label="اتصال">
-            <Phone className="w-4 h-4" />
-          </Button>
+          <a href={`tel:${contact}`}>
+            <Button variant="secondary" size="sm" className="px-3" aria-label="اتصال">
+              <Phone className="w-4 h-4" />
+            </Button>
+          </a>
         )}
       </div>
     </CardContent>
@@ -374,10 +376,12 @@ export const HousingCard = ({ name, location, price, contact, isComingSoon, imag
           <p className="text-[var(--foreground)] font-bold text-sm">{price}</p>
         </div>
         {!isComingSoon && contact && (
-          <Button variant="outline" size="sm" className="gap-1.5" aria-label={`الاتصال بـ ${name}`}>
-            <Phone className="w-3.5 h-3.5" />
-            اتصال
-          </Button>
+          <a href={`tel:${contact}`}>
+            <Button variant="outline" size="sm" className="gap-1.5" aria-label={`الاتصال بـ ${name}`}>
+              <Phone className="w-3.5 h-3.5" />
+              اتصال
+            </Button>
+          </a>
         )}
       </div>
     </CardContent>

@@ -97,7 +97,12 @@ export const INTERNSHIP_BY_SLUG_QUERY = defineQuery(`*[_type == "internship" && 
   factory->{
     _id,
     name,
+    slug,
     location,
+    phone,
+    email,
+    contact,
+    website,
     image
   }
 }`)
