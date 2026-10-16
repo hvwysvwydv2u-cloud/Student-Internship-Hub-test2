@@ -69,3 +69,5 @@ logs
 *.test.tsx
 *.spec.ts
 *.spec.tsx
+.vercel
+.env*
