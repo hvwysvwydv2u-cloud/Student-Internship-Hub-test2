@@ -19,6 +19,10 @@
 
 # production
 /build
+/dist
+
+# Sanity generated runtime
+.sanity/
 
 # misc
 .DS_Store

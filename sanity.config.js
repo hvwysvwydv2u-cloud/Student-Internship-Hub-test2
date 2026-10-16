@@ -6,8 +6,8 @@ import { projectId, dataset } from './src/sanity/env'
 
 export default defineConfig({
   basePath: '/studio',
-  projectId: projectId || 'your-project-id',
-  dataset: dataset || 'production',
+  projectId,
+  dataset,
   schema,
   plugins: [
     structureTool(),

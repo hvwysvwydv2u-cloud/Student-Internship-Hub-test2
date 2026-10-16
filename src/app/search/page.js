@@ -5,6 +5,8 @@ import { client } from "@/sanity/lib/client";
 import { FACTORIES_QUERY } from "@/sanity/lib/queries";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function SearchPage() {
   let factories = [];
   try {

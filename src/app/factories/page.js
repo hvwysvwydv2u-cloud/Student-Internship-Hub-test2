@@ -6,6 +6,8 @@ import { MapPin, Clock, ArrowLeft } from "lucide-react";
 import { client } from "@/sanity/lib/client";
 import { FACTORIES_QUERY } from "@/sanity/lib/queries";
 
+export const dynamic = "force-dynamic";
+
 export default async function FactoriesPage() {
   let factories = [];
   try {

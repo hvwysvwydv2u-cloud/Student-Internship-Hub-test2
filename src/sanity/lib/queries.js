@@ -75,7 +75,7 @@ export const INTERNSHIPS_QUERY = defineQuery(`*[_type == "internship"]{
   "image": image.asset->url,
   "factoryName": factory->name,
   "factorySlug": factory->slug.current,
-  "factoryLogo": factory.logo.asset->url
+  "factoryLogo": factory->logo.asset->url
 }`)
 
 export const INTERNSHIP_BY_SLUG_QUERY = defineQuery(`*[_type == "internship" && slug.current == $slug][0]{

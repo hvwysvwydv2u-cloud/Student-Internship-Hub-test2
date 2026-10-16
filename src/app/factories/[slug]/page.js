@@ -17,6 +17,8 @@ import {
   GraduationCap,
 } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   let factory = null;

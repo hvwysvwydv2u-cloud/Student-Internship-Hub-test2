@@ -77,7 +77,7 @@ export default function ProfilePage() {
       const query = `*[_type == "internship" && $dept in departments]{
         _id, title, "name": title, "slug": slug.current, location, description,
         hours, price, departments, "image": image.asset->url,
-        "factoryName": factory->name, "factoryLogo": factory.logo.asset->url
+        "factoryName": factory->name, "factoryLogo": factory->logo.asset->url
       }[0...3]`;
       const jobs = await client.fetch(query, { dept });
       setRecommendedJobs(jobs);

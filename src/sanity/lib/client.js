@@ -2,6 +2,10 @@ import { createClient } from 'next-sanity'
 import { apiVersion, dataset, projectId, useCdn } from '../env'
 
 function getClient() {
+  if (!projectId) {
+    throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID')
+  }
+
   return createClient({
     apiVersion,
     dataset,

@@ -4,6 +4,8 @@ import { EmptyState } from "@/components/empty-state";
 import { client } from "@/sanity/lib/client";
 import { HOUSING_QUERY } from "@/sanity/lib/queries";
 
+export const dynamic = "force-dynamic";
+
 export default async function HousingPage() {
   let housing = [];
   try {

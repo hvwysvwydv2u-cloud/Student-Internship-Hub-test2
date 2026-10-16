@@ -65,20 +65,14 @@ export async function POST(request) {
 
     const currentSaved = student?.savedOpportunities || [];
     const isSaved = currentSaved.includes(opportunityId);
+    const nextSaved = isSaved
+      ? currentSaved.filter((id) => id !== opportunityId)
+      : [...currentSaved, opportunityId];
 
-    let patch;
-    if (isSaved) {
-      patch = getWriteClient()
-        .patch(studentId)
-        .unset([`savedOpportunities[_key == "${opportunityId}"]`]);
-    } else {
-      patch = getWriteClient()
-        .patch(studentId)
-        .setIfMissing({ savedOpportunities: [] })
-        .append('savedOpportunities', [opportunityId]);
-    }
-
-    await patch.commit();
+    await getWriteClient()
+      .patch(studentId)
+      .set({ savedOpportunities: nextSaved })
+      .commit();
 
     return NextResponse.json({
       success: true,
