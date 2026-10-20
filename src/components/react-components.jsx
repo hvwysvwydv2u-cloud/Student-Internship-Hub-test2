@@ -273,7 +273,7 @@ export const BottomNav = () => {
 /* ============================================================
    HERO SECTION
    ============================================================ */
-export const HeroSection = ({ title, subtitle }) => (
+export const HeroSection = ({ subtitle }) => (
   <div className="relative py-6 sm:py-10 max-w-7xl mx-auto px-4 sm:px-6" dir="rtl">
     <div
       className="relative rounded-3xl p-8 sm:p-14 lg:p-16 overflow-hidden border transition-all duration-300 flex flex-col items-center justify-center text-center"

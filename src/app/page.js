@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="space-y-12 sm:space-y-16">
       {/* 1. Dark Green Hero Section (Matches Screenshot 1) */}
-      <HeroSection title="ابحث عن تدريبك." />
+      <HeroSection />
 
       {/* 2. Featured Opportunities Section (Matches Screenshot 1's "Random Picks..." Section) */}
       <StitchSection>
