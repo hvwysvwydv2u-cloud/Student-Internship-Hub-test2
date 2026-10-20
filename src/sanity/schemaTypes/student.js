@@ -84,6 +84,19 @@ export default {
       readOnly: true,
     },
     {
+      name: 'role',
+      title: 'دور المستخدم',
+      description: 'يحدد صلاحيات المستخدم (student / admin). يتم تعيينه من لوحة التحكم فقط.',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'طالب', value: 'student' },
+          { title: 'مسؤول', value: 'admin' },
+        ],
+      },
+      initialValue: 'student',
+    },
+    {
       name: 'createdAt',
       title: 'تاريخ التسجيل',
       type: 'datetime',

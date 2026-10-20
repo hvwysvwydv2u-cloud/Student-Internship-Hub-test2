@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from 'next-sanity';
 import { apiVersion, dataset, projectId } from '@/sanity/env';
+import { setSessionCookie, ROLES } from '@/lib/auth';
 
 function getWriteClient() {
   return createClient({
@@ -31,7 +32,10 @@ export async function POST(request) {
       governorate,
       academicYear,
       department,
-      completedHours
+      completedHours,
+      skills,
+      avatar,
+      role
     }`;
     
     const student = await getWriteClient().fetch(query, { phone });
@@ -43,6 +47,11 @@ export async function POST(request) {
       );
     }
 
+    const role = student.role || ROLES.STUDENT;
+
+    // Set secure httpOnly session cookie
+    await setSessionCookie(student._id, role);
+
     return NextResponse.json({
       success: true,
       user: {
@@ -53,6 +62,9 @@ export async function POST(request) {
         academicYear: student.academicYear,
         department: student.department,
         completedHours: student.completedHours || 0,
+        skills: student.skills || [],
+        avatar: student.avatar || null,
+        role,
       }
     });
 

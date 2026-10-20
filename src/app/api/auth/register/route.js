@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from 'next-sanity';
 import { apiVersion, dataset, projectId } from '@/sanity/env';
+import { setSessionCookie, ROLES } from '@/lib/auth';
 
 function getWriteClient() {
   return createClient({
@@ -41,7 +42,7 @@ export async function POST(request) {
       );
     }
 
-    // إنشاء طالب جديد
+    // إنشاء طالب جديد — new users always get the "student" role
     const newStudent = {
       _type: 'student',
       name,
@@ -50,10 +51,14 @@ export async function POST(request) {
       academicYear,
       department,
       completedHours: 0,
+      role: ROLES.STUDENT,
       createdAt: new Date().toISOString(),
     };
 
     const result = await getWriteClient().create(newStudent);
+
+    // Set secure httpOnly session cookie
+    await setSessionCookie(result._id, ROLES.STUDENT);
 
     return NextResponse.json({
       success: true,
@@ -65,6 +70,7 @@ export async function POST(request) {
         academicYear: result.academicYear,
         department: result.department,
         completedHours: result.completedHours || 0,
+        role: ROLES.STUDENT,
       }
     });
 

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from 'next-sanity';
 import { apiVersion, dataset, projectId } from '@/sanity/env';
+import { getSession, requireOwnership } from '@/lib/auth';
 
 function getWriteClient() {
   return createClient({
@@ -20,6 +21,17 @@ export async function GET(request) {
 
     if (!studentId) {
       return NextResponse.json({ error: 'studentId مطلوب' }, { status: 400 });
+    }
+
+    // ── Verify session & ownership ──
+    const session = await getSession(request);
+    if (!session) {
+      return NextResponse.json({ error: 'غير مصرح — يرجى تسجيل الدخول' }, { status: 401 });
+    }
+
+    // Users can only fetch their own favorites (admins can view any)
+    if (session.uid !== studentId && session.role !== 'admin') {
+      return NextResponse.json({ error: 'غير مسموح بالوصول لبيانات مستخدم آخر' }, { status: 403 });
     }
 
     const client = createClient({ projectId, dataset, apiVersion, useCdn: false });
@@ -47,6 +59,20 @@ export async function POST(request) {
       return NextResponse.json(
         { error: 'studentId و opportunityId مطلوبان' },
         { status: 400 }
+      );
+    }
+
+    // ── Verify session & ownership ──
+    const session = await getSession(request);
+    if (!session) {
+      return NextResponse.json({ error: 'غير مصرح — يرجى تسجيل الدخول' }, { status: 401 });
+    }
+
+    const ownership = requireOwnership(session, studentId);
+    if (!ownership.allowed) {
+      return NextResponse.json(
+        { error: ownership.error },
+        { status: ownership.status }
       );
     }
 
