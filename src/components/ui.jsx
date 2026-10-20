@@ -11,20 +11,29 @@ export function cn(...inputs) {
 export const Button = React.forwardRef(({
   className,
   variant = 'primary',
+  size = 'md',
   disabled,
   loading,
   children,
   asChild,
   ...props
 }, ref) => {
-  const variants = {
-    primary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-[var(--primary)] text-white transition-all duration-200 hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none disabled:hover:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
-    secondary: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl bg-[var(--surface-elevated)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--surface)] hover:border-[var(--border-hover)] hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
-    ghost: 'inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-lg text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
-    outline: 'inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base font-semibold rounded-xl border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)]/50 hover:bg-[var(--primary-subtle)] hover:text-[var(--primary)] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
+  const sizeClasses = {
+    sm: 'px-4 py-2 text-xs sm:text-sm',
+    md: 'px-5 py-2.5 sm:px-6 sm:py-2.5 text-sm sm:text-base',
+    lg: 'px-6 py-3 sm:px-7 sm:py-3.5 text-base sm:text-lg',
   };
+
+  const variants = {
+    primary: 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm hover:bg-[var(--primary-hover)] hover:-translate-y-0.5 hover:shadow-[0_4px_16px_var(--primary-glow)] active:scale-[0.98]',
+    secondary: 'bg-[var(--surface-elevated)] text-[var(--foreground)] border border-[var(--border)] hover:bg-[var(--surface)] hover:border-[var(--primary)]/50 hover:-translate-y-0.5 active:scale-[0.98]',
+    ghost: 'text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)] active:scale-[0.98]',
+    outline: 'border border-[var(--border)] text-[var(--foreground)] hover:border-[var(--primary)] hover:bg-[var(--primary-subtle)] hover:text-[var(--primary)] active:scale-[0.98]',
+  };
+
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 active:scale-[0.98]',
+    'inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:pointer-events-none disabled:hover:transform-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]',
+    sizeClasses[size] || sizeClasses.md,
     variants[variant],
     className
   );
@@ -185,9 +194,9 @@ export const Tabs = ({ tabs = [], activeTab, onChange, className }) => (
         key={tab.id}
         onClick={() => onChange(tab.id)}
         className={cn(
-          'flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200',
+          'flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all duration-200 cursor-pointer',
           activeTab === tab.id
-            ? 'bg-[var(--primary)] text-white shadow-md'
+            ? 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-sm'
             : 'text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)]'
         )}
       >

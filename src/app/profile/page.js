@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { StitchSection, StitchLoop } from '@/components/stitch-loop';
 import { Button, Card, CardContent, Input, Select, Badge } from '@/components/ui';
 import { FactoryCard } from '@/components/react-components';
@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/empty-state';
 import { governorates } from '@/data/mockData';
 import { client } from '@/sanity/lib/client';
 import { useToast } from '@/lib/toast-provider';
-import { User, Phone, MapPin, GraduationCap, BookOpen, Save, Edit3, LogOut, CheckCircle, Award, Compass, Plus, Minus, Bookmark } from 'lucide-react';
+import { User, Phone, MapPin, GraduationCap, BookOpen, Save, Edit3, LogOut, CheckCircle, Award, Compass, Plus, Minus, Bookmark, Camera, Trash2, Upload } from 'lucide-react';
 
 export default function ProfilePage() {
   const { toast } = useToast();
@@ -92,6 +92,110 @@ export default function ProfilePage() {
     }
   }, [user?.department, fetchRecommendations]);
 
+  const fileInputRef = useRef(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  const handleAvatarUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast('يرجى اختيار ملف صورة صالح (PNG, JPG, WebP)', { type: 'error' });
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast('حجم الصورة كبير جداً، الحد الأقصى المسموح 5 ميجابايت', { type: 'error' });
+      return;
+    }
+
+    setUploadingAvatar(true);
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const base64Image = event.target?.result;
+      if (!base64Image) {
+        setUploadingAvatar(false);
+        return;
+      }
+
+      // 1. Real-time preview & instant local persistence
+      const updatedUser = { ...user, avatar: base64Image };
+      setUser(updatedUser);
+      localStorage.setItem('studentUser', JSON.stringify(updatedUser));
+
+      // 2. Instant backend persistence
+      try {
+        const res = await fetch('/api/auth/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: user.id || user._id,
+            name: formData.name || user.name,
+            governorate: formData.governorate || user.governorate,
+            academicYear: formData.academicYear || user.academicYear,
+            department: formData.department || user.department,
+            completedHours,
+            skills,
+            avatar: base64Image,
+          }),
+        });
+        const data = await res.json();
+        if (data.user) {
+          const merged = { ...updatedUser, ...data.user, avatar: base64Image };
+          setUser(merged);
+          localStorage.setItem('studentUser', JSON.stringify(merged));
+        }
+        toast('تم تحديث الصورة الشخصية بنجاح!', { type: 'success' });
+      } catch (err) {
+        toast('تم حفظ الصورة بنجاح محلياً', { type: 'success' });
+      } finally {
+        setUploadingAvatar(false);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      }
+    };
+
+    reader.onerror = () => {
+      setUploadingAvatar(false);
+      toast('حدث خطأ أثناء قراءة ملف الصورة', { type: 'error' });
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (uploadingAvatar) return;
+    setUploadingAvatar(true);
+
+    // 1. Real-time preview & instant local persistence
+    const updatedUser = { ...user, avatar: null, profileImage: null };
+    setUser(updatedUser);
+    localStorage.setItem('studentUser', JSON.stringify(updatedUser));
+
+    // 2. Instant backend persistence
+    try {
+      await fetch('/api/auth/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: user.id || user._id,
+          name: formData.name || user.name,
+          governorate: formData.governorate || user.governorate,
+          academicYear: formData.academicYear || user.academicYear,
+          department: formData.department || user.department,
+          completedHours,
+          skills,
+          avatar: null,
+        }),
+      });
+      toast('تمت إزالة الصورة الشخصية بنجاح', { type: 'info' });
+    } catch {
+      toast('تمت إزالة الصورة محلياً', { type: 'info' });
+    } finally {
+      setUploadingAvatar(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('studentUser');
     window.location.href = '/login';
@@ -106,7 +210,7 @@ export default function ProfilePage() {
       const res = await fetch('/api/auth/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: user.id, ...formData, completedHours, skills }),
+        body: JSON.stringify({ id: user.id, ...formData, completedHours, skills, avatar: user.avatar || user.profileImage || null }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'حدث خطأ أثناء الحفظ');
@@ -170,18 +274,74 @@ export default function ProfilePage() {
         <StitchLoop index={0}>
           <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] p-6 md:p-8 transition-colors" style={{ backgroundColor: 'var(--surface)' }}>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-              <div className="flex items-center gap-5">
-                <div className="relative">
-                  <div className="w-20 h-20 bg-[var(--primary-subtle)] border border-[var(--primary)]/20 rounded-2xl flex items-center justify-center text-[var(--primary)]">
-                    <User className="w-10 h-10" />
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                {/* Avatar with Upload & Remove Controls */}
+                <div className="relative group">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 bg-[var(--surface-elevated)] border-2 border-[var(--border)] rounded-2xl flex items-center justify-center text-[var(--primary)] overflow-hidden shadow-sm transition-all group-hover:border-[var(--primary)]/50">
+                    {user?.avatar || user?.profileImage ? (
+                      <img src={user.avatar || user.profileImage} alt={user.name} className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="w-10 h-10 sm:w-12 sm:h-12 text-[var(--text-muted)]" />
+                    )}
                   </div>
-                  <div className="absolute -bottom-1.5 -left-1.5 bg-[var(--primary)] text-white font-bold text-[10px] px-2 py-0.5 rounded-md">
+
+                  {/* Camera Quick Button Overlay */}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingAvatar}
+                    className="absolute inset-0 bg-black/55 text-white rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 cursor-pointer focus:opacity-100"
+                    title="تغيير الصورة الشخصية"
+                    aria-label="تغيير الصورة الشخصية"
+                  >
+                    <Camera className="w-5 h-5" />
+                    <span className="text-[10px] font-bold">تغيير</span>
+                  </button>
+
+                  <div className="absolute -bottom-1.5 -left-1.5 bg-[var(--primary)] text-[var(--primary-foreground)] font-bold text-[10px] px-2 py-0.5 rounded-md shadow-xs pointer-events-none">
                     طالب
                   </div>
                 </div>
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--foreground)] tracking-tight mb-2">{user.name}</h1>
-                  <div className="flex flex-wrap gap-2">
+
+                <div className="text-center sm:text-right">
+                  <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--foreground)] tracking-tight mb-1">{user.name}</h1>
+
+                  {/* Avatar Upload / Remove Actions */}
+                  <div className="flex items-center justify-center sm:justify-start gap-2 mb-3">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploadingAvatar}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--primary)] hover:underline cursor-pointer disabled:opacity-50"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                      <span>{user?.avatar || user?.profileImage ? 'تغيير الصورة' : 'رفع صورة شخصية'}</span>
+                    </button>
+                    {(user?.avatar || user?.profileImage) && (
+                      <>
+                        <span className="text-[var(--text-muted)] text-xs">•</span>
+                        <button
+                          type="button"
+                          onClick={handleRemoveAvatar}
+                          disabled={uploadingAvatar}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--error)] hover:underline cursor-pointer disabled:opacity-50"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>إزالة</span>
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    accept="image/*"
+                    onChange={handleAvatarUpload}
+                    className="hidden"
+                  />
+
+                  <div className="flex flex-wrap justify-center sm:justify-start gap-2">
                     <Badge variant="primary">الفرقة {user.academicYear}</Badge>
                     <Badge variant="secondary">{user.department}</Badge>
                     <Badge variant="secondary">📍 {user.governorate}</Badge>

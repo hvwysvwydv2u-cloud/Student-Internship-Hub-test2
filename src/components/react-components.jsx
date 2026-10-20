@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Moon, Sun, Home, Menu, X, Heart } from 'lucide-react';
+import { Search, MapPin, Clock, Briefcase, Phone, User, LogIn, Moon, Sun, Home, Menu, X, Heart, ArrowUpRight, Settings } from 'lucide-react';
 import { Button, Card, CardContent, Input, Select, Badge, Progress, Avatar, Tabs, cn, Label } from './ui';
 import { useTheme } from '@/lib/theme-provider';
 import { useToast } from '@/lib/toast-provider';
@@ -17,13 +17,13 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-lg hover:bg-[var(--primary-subtle)] transition-colors"
+      className="p-2 rounded-lg hover:bg-[var(--primary-subtle)] text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
       aria-label={theme === 'dark' ? 'التبديل للوضع النهاري' : 'التبديل للوضع الليلي'}
     >
       {theme === 'dark' ? (
-        <Sun className="w-[18px] h-[18px] text-[var(--text-secondary)]" />
+        <Sun className="w-[18px] h-[18px]" />
       ) : (
-        <Moon className="w-[18px] h-[18px] text-[var(--text-secondary)]" />
+        <Moon className="w-[18px] h-[18px]" />
       )}
     </button>
   );
@@ -34,6 +34,7 @@ const ThemeToggle = () => {
    ============================================================ */
 export const NavBar = () => {
   const pathname = usePathname();
+  const { toggleSettings } = useTheme();
   const [user, setUser] = useState(() => {
     if (typeof window === 'undefined') return null;
     const stored = localStorage.getItem('studentUser');
@@ -62,55 +63,74 @@ export const NavBar = () => {
   return (
     <>
       <nav
-        className="sticky top-0 z-50 border-b transition-colors duration-200"
+        className="sticky top-0 z-40 border-b transition-colors duration-200"
         style={{
           backgroundColor: 'var(--nav-bg)',
           borderColor: 'var(--nav-border)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
         }}
         dir="rtl"
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between py-3 px-4 sm:px-6">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 bg-[var(--primary)] rounded-lg flex items-center justify-center rotate-12">
-              <Briefcase className="text-white w-4.5 h-4.5 -rotate-12" />
+        <div className="max-w-7xl mx-auto flex items-center justify-between py-3.5 px-4 sm:px-6">
+          {/* Logo — Clean Elzero Life Style */}
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-8 h-8 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center font-black text-sm shadow-sm transition-transform group-hover:scale-105">
+              TL
             </div>
-            <span className="text-lg font-bold tracking-tight text-[var(--foreground)]">
-              TRAIN<span className="text-[var(--primary)]">LINK</span>
+            <span className="text-xl font-black tracking-tight text-[var(--foreground)]">
+              TrainLink<span className="text-[var(--primary)]">.</span>
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={cn(
-                  "text-sm font-medium transition-all duration-200 relative px-3 py-2 rounded-lg",
-                  pathname === link.path
-                    ? "text-[var(--primary)] bg-[var(--primary-subtle)]"
-                    : "text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--primary-subtle)]/50"
-                )}
-              >
-                {link.name}
-              </Link>
-            ))}
+          <div className="hidden md:flex items-center gap-1 lg:gap-2">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  className={cn(
+                    "text-sm font-medium transition-all duration-200 px-3 py-1.5 rounded-lg",
+                    isActive
+                      ? "text-[var(--foreground)] font-bold bg-[var(--primary-subtle)]"
+                      : "text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--surface-elevated)]"
+                  )}
+                >
+                  {link.name}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
+            <button
+              onClick={toggleSettings}
+              className="p-2 rounded-lg hover:bg-[var(--primary-subtle)] text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
+              aria-label="تخصيص الألوان والمظهر"
+              title="ألوان الموقع والمظهر"
+            >
+              <Settings className="w-[18px] h-[18px]" />
+            </button>
             {user ? (
               <div className="flex items-center gap-2">
                 <Link
                   href="/profile"
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg border border-[var(--border)] hover:bg-[var(--primary-subtle)] transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--border)] hover:bg-[var(--primary-subtle)] transition-colors"
                 >
-                  <User className="w-4 h-4 text-[var(--primary)]" />
-                  <span className="text-sm font-medium text-[var(--foreground)]">{user.name}</span>
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name || "المستخدم"}
+                      className="w-5 h-5 rounded-full object-cover border border-[var(--primary)]"
+                    />
+                  ) : (
+                    <User className="w-4 h-4 text-[var(--primary)]" />
+                  )}
+                  <span className="text-sm font-semibold text-[var(--foreground)]">{user.name}</span>
                 </Link>
                 <Button size="sm" variant="ghost" className="text-[var(--error)] hover:text-[var(--error)] hover:bg-[var(--error)]/10 px-3" onClick={handleLogout}>
                   خروج
@@ -118,7 +138,7 @@ export const NavBar = () => {
               </div>
             ) : (
               <Link href="/login">
-                <Button size="sm" className="gap-2">
+                <Button size="sm" className="gap-2 font-semibold">
                   <LogIn className="w-4 h-4" />
                   <span>دخول</span>
                 </Button>
@@ -129,6 +149,13 @@ export const NavBar = () => {
           {/* Mobile Menu Toggle */}
           <div className="flex md:hidden items-center gap-1">
             <ThemeToggle />
+            <button
+              onClick={toggleSettings}
+              className="p-2 rounded-lg hover:bg-[var(--primary-subtle)] text-[var(--text-secondary)]"
+              aria-label="تخصيص الألوان"
+            >
+              <Settings className="w-5 h-5" />
+            </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg hover:bg-[var(--primary-subtle)] transition-colors"
@@ -160,9 +187,17 @@ export const NavBar = () => {
             <div className="border-t border-[var(--border)] pt-2 mt-2">
               {user ? (
                 <div className="flex items-center justify-between">
-                  <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[var(--foreground)]">
-                    <User className="w-4 h-4 text-[var(--primary)]" />
-                    {user.name}
+                  <Link href="/profile" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-[var(--foreground)]">
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name || "المستخدم"}
+                        className="w-6 h-6 rounded-full object-cover border border-[var(--primary)]"
+                      />
+                    ) : (
+                      <User className="w-4 h-4 text-[var(--primary)]" />
+                    )}
+                    <span>{user.name}</span>
                   </Link>
                   <button onClick={handleLogout} className="px-3 py-2 text-sm font-medium text-[var(--error)]">
                     خروج
@@ -239,23 +274,123 @@ export const BottomNav = () => {
    HERO SECTION
    ============================================================ */
 export const HeroSection = ({ title, subtitle }) => (
-  <div className="relative py-16 md:py-24 overflow-hidden" dir="rtl">
-    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--primary-glow)_0%,_transparent_60%)]" />
-    <div className="relative max-w-4xl mx-auto text-center px-6">
-      <h1 className="text-4xl md:text-6xl font-black mb-5 leading-tight text-[var(--foreground)]">
-        {title} <br />
-        <span className="text-[var(--primary)]">للمستقبل</span>
-      </h1>
-      <p className="text-base md:text-lg text-[var(--text-secondary)] mb-8 max-w-2xl mx-auto leading-relaxed">
-        {subtitle || "ترين لينك — تعلم. تدرب. اشتغل. منصة تربط بين الطلاب المتميزين وأكبر المصانع والشركات الصناعية في مصر."}
-      </p>
-      <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <Link href="/search">
-          <Button size="lg" className="w-full sm:w-auto">ابدأ البحث الآن</Button>
-        </Link>
-        <Link href="/matching">
-          <Button variant="outline" size="lg" className="w-full sm:w-auto">جرب المطابقة الذكية</Button>
-        </Link>
+  <div className="relative py-6 sm:py-10 max-w-7xl mx-auto px-4 sm:px-6" dir="rtl">
+    <div
+      className="relative rounded-3xl p-8 sm:p-14 lg:p-16 overflow-hidden border transition-all duration-300 flex flex-col items-center justify-center text-center"
+      style={{
+        backgroundColor: 'var(--hero-bg)',
+        borderColor: 'var(--hero-border)',
+        boxShadow: '0 25px 60px -20px rgba(0,0,0,0.45)',
+      }}
+    >
+      {/* Background ambient radial glows */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] pointer-events-none rounded-full blur-3xl opacity-20"
+        style={{ backgroundColor: 'var(--primary)' }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -top-24 right-1/4 w-72 h-72 pointer-events-none rounded-full blur-3xl opacity-15"
+        style={{ backgroundColor: 'var(--accent-red)' }}
+        aria-hidden="true"
+      />
+
+      <div className="relative z-10 w-full max-w-4xl flex flex-col items-center">
+        {/* Top Badge/Tag */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest text-[var(--primary)] bg-[var(--primary-subtle)] border border-[var(--primary)]/30 font-mono mb-6 sm:mb-8 shadow-sm">
+          <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse" />
+          <span>TRAINLINK HUB</span>
+        </div>
+
+        {/* Main Arabic Typography with full diacritical marks (Tashkeel) */}
+        <h1 className="space-y-1 sm:space-y-2 mb-6 sm:mb-8 select-none font-black text-5xl sm:text-7xl md:text-8xl tracking-tight leading-[1.15]">
+          <div className="transition-transform duration-200 hover:scale-[1.02] inline-block sm:block">
+            <span className="text-[var(--hero-heading)] drop-shadow-sm">تَعَلَّمْ</span>
+            <span className="text-[var(--accent-red)]">.</span>
+          </div>
+          <div className="transition-transform duration-200 hover:scale-[1.02] inline-block sm:block mx-3 sm:mx-0">
+            <span className="text-[var(--accent-red)]">تَدَرَّبْ</span>
+            <span className="text-[var(--hero-heading)] drop-shadow-sm">.</span>
+          </div>
+          <div className="transition-transform duration-200 hover:scale-[1.02] inline-block sm:block">
+            <span className="text-[var(--hero-heading)] drop-shadow-sm">انْطَلِقْ</span>
+            <span className="text-[var(--accent-red)]">.</span>
+          </div>
+        </h1>
+
+        {/* Subtitle */}
+        <p className="text-base sm:text-lg md:text-xl leading-relaxed text-[var(--hero-text)] max-w-2xl mx-auto mb-8 font-medium">
+          {subtitle || "المنصة الأولى في مصر التي تربط طلاب التعليم الفني والجامعي بأفضل المصانع والشركات الصناعية. مساحتك المتكاملة لاكتشاف فرص التدريب والمطابقة الذكية."}
+        </p>
+
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3.5 mb-10 sm:mb-12">
+          <Link href="/search">
+            <Button size="lg" className="gap-2.5 font-bold shadow-lg text-sm sm:text-base px-6 py-3">
+              <span>استكشف فرص التدريب</span>
+              <ArrowUpRight className="w-5 h-5 shrink-0" />
+            </Button>
+          </Link>
+          <Link href="/matching">
+            <Button variant="secondary" size="lg" className="gap-2 font-semibold text-sm sm:text-base px-6 py-3">
+              <span>جرب المطابقة الذكية</span>
+              <ArrowUpRight className="w-4 h-4 text-[var(--text-muted)] shrink-0" />
+            </Button>
+          </Link>
+        </div>
+
+        {/* Stats Cards Bar directly below the text */}
+        <div className="w-full pt-8 sm:pt-10 border-t border-[var(--hero-border)]">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-6 text-center">
+            {/* Card 1: 1,200+ فرصة تدريب */}
+            <div
+              className="p-5 sm:p-6 rounded-2xl border transition-all duration-300 hover:border-[var(--primary)]/50 hover:-translate-y-1 shadow-sm"
+              style={{
+                backgroundColor: 'var(--hero-surface)',
+                borderColor: 'var(--hero-border)',
+              }}
+            >
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--hero-heading)] tracking-tight">
+                <span dir="ltr">1,200<span className="text-[var(--accent-red)]">+</span></span>
+              </div>
+              <div className="text-sm sm:text-base font-bold text-[var(--hero-text)] mt-2">
+                فرصة تدريب
+              </div>
+            </div>
+
+            {/* Card 2: 450+ مصنع شريك */}
+            <div
+              className="p-5 sm:p-6 rounded-2xl border transition-all duration-300 hover:border-[var(--primary)]/50 hover:-translate-y-1 shadow-sm"
+              style={{
+                backgroundColor: 'var(--hero-surface)',
+                borderColor: 'var(--hero-border)',
+              }}
+            >
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--accent-red)] tracking-tight">
+                <span dir="ltr">450<span className="text-[var(--hero-heading)]">+</span></span>
+              </div>
+              <div className="text-sm sm:text-base font-bold text-[var(--hero-text)] mt-2">
+                مصنع شريك
+              </div>
+            </div>
+
+            {/* Card 3: 27 محافظة */}
+            <div
+              className="p-5 sm:p-6 rounded-2xl border transition-all duration-300 hover:border-[var(--primary)]/50 hover:-translate-y-1 shadow-sm"
+              style={{
+                backgroundColor: 'var(--hero-surface)',
+                borderColor: 'var(--hero-border)',
+              }}
+            >
+              <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--hero-heading)] tracking-tight">
+                <span>27</span>
+              </div>
+              <div className="text-sm sm:text-base font-bold text-[var(--hero-text)] mt-2">
+                محافظة
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -591,44 +726,48 @@ export const LoginForm = () => {
    FOOTER
    ============================================================ */
 export const Footer = () => (
-  <footer className="border-t border-[var(--border)] py-10 px-6 mt-16 pb-24 md:pb-10 transition-colors" dir="rtl" style={{ backgroundColor: 'var(--surface)' }}>
-    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+  <footer className="border-t border-[var(--border)] py-12 px-6 mt-20 pb-24 md:pb-12 transition-colors" dir="rtl" style={{ backgroundColor: 'var(--surface)' }}>
+    <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
       <div className="space-y-3">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 bg-[var(--primary)] rounded-lg flex items-center justify-center rotate-12">
-            <Briefcase className="text-white w-4 h-4 -rotate-12" />
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-7 h-7 rounded-lg bg-[var(--primary)] text-[var(--primary-foreground)] flex items-center justify-center font-black text-xs shadow-xs">
+            TL
           </div>
-          <span className="text-lg font-bold text-[var(--foreground)]">TRAIN<span className="text-[var(--primary)]">LINK</span></span>
+          <span className="text-xl font-black text-[var(--foreground)] tracking-tight">TrainLink<span className="text-[var(--primary)]">.</span></span>
         </Link>
-        <p className="text-[var(--text-secondary)] text-sm leading-relaxed">ترين لينك — منصتك الأولى للتدريب الصناعي في مصر.</p>
+        <p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-sm">
+          ترين لينك — منصتك الأولى للتدريب الصناعي في مصر. نساعد الطلاب على اكتشاف الفرص وتطوير المهارات وبناء المستقبل.
+        </p>
       </div>
       <div>
-        <h4 className="text-[var(--foreground)] font-bold mb-3 text-sm">روابط سريعة</h4>
-        <ul className="space-y-2 text-[var(--text-secondary)] text-sm">
+        <h4 className="text-[var(--foreground)] font-bold mb-4 text-sm tracking-wide">روابط سريعة</h4>
+        <ul className="space-y-2.5 text-[var(--text-secondary)] text-sm">
           <li><Link href="/search" className="hover:text-[var(--primary)] transition-colors">البحث عن تدريب</Link></li>
           <li><Link href="/housing" className="hover:text-[var(--primary)] transition-colors">البحث عن سكن</Link></li>
           <li><Link href="/matching" className="hover:text-[var(--primary)] transition-colors">المطابقة الذكية</Link></li>
+          <li><Link href="/factories" className="hover:text-[var(--primary)] transition-colors">دليل المصانع</Link></li>
         </ul>
       </div>
       <div>
-        <h4 className="text-[var(--foreground)] font-bold mb-3 text-sm">تواصل معنا</h4>
-        <ul className="space-y-2 text-[var(--text-secondary)] text-sm">
+        <h4 className="text-[var(--foreground)] font-bold mb-4 text-sm tracking-wide">تواصل معنا</h4>
+        <ul className="space-y-2.5 text-[var(--text-secondary)] text-sm">
           <li>info@trainlink.eg</li>
-          <li dir="ltr">+20 100 123 4567</li>
-          <li>القاهرة، مصر</li>
+          <li dir="ltr" className="text-right">+20 100 123 4567</li>
+          <li>القاهرة، جمهورية مصر العربية</li>
         </ul>
       </div>
       <div>
-        <h4 className="text-[var(--foreground)] font-bold mb-3 text-sm">اشترك في النشرة</h4>
+        <h4 className="text-[var(--foreground)] font-bold mb-4 text-sm tracking-wide">النشرة البريدية</h4>
+        <p className="text-xs text-[var(--text-muted)] mb-3 leading-relaxed">احصل على أحدث الفرص والتدريبات مباشرة في بريدك.</p>
         <div className="flex gap-2">
-          <Input placeholder="بريدك الإلكتروني" className="h-10" />
-          <Button size="sm" className="h-10 px-4">اشترك</Button>
+          <Input placeholder="بريدك الإلكتروني" className="h-10 text-sm" />
+          <Button size="sm" className="h-10 px-4 font-semibold shrink-0">اشترك</Button>
         </div>
       </div>
     </div>
-    <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-3">
+    <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-[var(--border)] flex flex-col md:flex-row justify-between items-center gap-4">
       <p className="text-[var(--text-muted)] text-xs">© 2026 TrainLink. جميع الحقوق محفوظة.</p>
-      <div className="flex gap-4 text-[var(--text-muted)] text-xs">
+      <div className="flex gap-5 text-[var(--text-muted)] text-xs">
         <a href="#" className="hover:text-[var(--primary)] transition-colors">سياسة الخصوصية</a>
         <a href="#" className="hover:text-[var(--primary)] transition-colors">شروط الخدمة</a>
       </div>
